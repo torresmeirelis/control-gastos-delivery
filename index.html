@@ -7,6 +7,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
 
   <style>
     @media print {
@@ -1779,6 +1781,138 @@
   </div>
 
   <script>
+    const CLAVES_SINCRONIZADAS = [
+      'mis_admin_pin', 'mis_retiro_caja_pin', 'mis_pedidos_activos_pin',
+      'mis_bitacora_diferencias_desglose', 'mis_tipos_gasto', 'mis_gastos_v2',
+      'mis_compras_bd', 'mis_proveedores_bd', 'mis_cuentas_por_pagar_bd',
+      'mis_ventas_entradas_bd', 'mis_ganancias_pos_bd', 'mis_transferencias_bd',
+      'mis_reorganizaciones_bd', 'mis_empleados_bd', 'mis_creditos_empleados_bd',
+      'mis_pedidos_activos_bd', 'mis_desgloses_historial_bd',
+      'mis_pedidos_editados_historial_bd', 'mis_vacaciones_historial_bd',
+      'mis_tarifas_delivery', 'mis_gastos_fijos_config', 'mis_inmuebles_equipos',
+      'mis_sucursales_negocio', 'mis_cajeras_asignadas', 'mis_deliveries_asignados',
+      'mis_cuadres_cajera_bd', 'mis_mi_cuadre_bd', 'mis_retiros_caja_bd',
+      'mis_pagos_nomina_bd', 'mis_permisos_empleados', 'mis_tolerancias_cuadre',
+      'mis_bancos_negocio', 'mis_cajas_negocio', 'mis_parametros_empresa'
+    ];
+    const setItemLocalOriginal = Storage.prototype.setItem;
+    const configuracionSupabase = window.SUPABASE_CONFIG || {};
+    const clienteSupabase = window.supabase && configuracionSupabase.url && configuracionSupabase.publishableKey
+      ? window.supabase.createClient(configuracionSupabase.url, configuracionSupabase.publishableKey)
+      : null;
+    let sincronizacionLista = false;
+    let temporizadorSincronizacion = null;
+    const cambiosPendientesNube = new Map();
+
+    function mostrarEstadoSincronizacion(texto, esError = false) {
+      let aviso = document.getElementById('estado-sincronizacion-nube');
+      if (!aviso) {
+        aviso = document.createElement('div');
+        aviso.id = 'estado-sincronizacion-nube';
+        aviso.className = 'fixed bottom-4 right-4 z-[100] px-4 py-2 rounded-xl shadow-lg text-xs font-bold text-white';
+        document.body.appendChild(aviso);
+      }
+      aviso.classList.toggle('bg-rose-600', esError);
+      aviso.classList.toggle('bg-emerald-600', !esError);
+      aviso.textContent = texto;
+      clearTimeout(aviso._ocultarTimer);
+      aviso._ocultarTimer = setTimeout(() => aviso.remove(), esError ? 8000 : 2500);
+    }
+
+    async function enviarCambiosPendientes() {
+      if (!clienteSupabase || cambiosPendientesNube.size === 0) return;
+      const filas = Array.from(cambiosPendientesNube, ([clave, valor]) => ({
+        clave,
+        valor,
+        actualizado_en: new Date().toISOString()
+      }));
+      cambiosPendientesNube.clear();
+      const { error } = await clienteSupabase.from('estado_aplicacion').upsert(filas, { onConflict: 'clave' });
+      if (error) {
+        filas.forEach(fila => cambiosPendientesNube.set(fila.clave, fila.valor));
+        mostrarEstadoSincronizacion('Sin conexión con Supabase. Los datos siguen guardados en esta computadora.', true);
+        console.error('Error al sincronizar con Supabase:', error);
+        return;
+      }
+      mostrarEstadoSincronizacion('Datos sincronizados');
+    }
+
+    function programarSincronizacion(clave, valor) {
+      if (!sincronizacionLista || !CLAVES_SINCRONIZADAS.includes(clave)) return;
+      cambiosPendientesNube.set(clave, valor);
+      clearTimeout(temporizadorSincronizacion);
+      temporizadorSincronizacion = setTimeout(enviarCambiosPendientes, 400);
+    }
+
+    Storage.prototype.setItem = function(clave, valor) {
+      setItemLocalOriginal.call(this, clave, valor);
+      if (this === localStorage) programarSincronizacion(clave, String(valor));
+    };
+
+    function avisarCambiosRemotos() {
+      let aviso = document.getElementById('aviso-cambios-remotos');
+      if (aviso) return;
+      aviso = document.createElement('button');
+      aviso.id = 'aviso-cambios-remotos';
+      aviso.type = 'button';
+      aviso.className = 'fixed bottom-4 right-4 z-[100] bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-3 rounded-xl shadow-xl text-xs font-bold';
+      aviso.innerHTML = '<i class="fa-solid fa-rotate mr-1"></i> Hay cambios de otra computadora. Actualizar';
+      aviso.onclick = () => location.reload();
+      document.body.appendChild(aviso);
+    }
+
+    function escucharCambiosRemotos() {
+      clienteSupabase.channel('sincronizacion-estado-aplicacion')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'estado_aplicacion' }, carga => {
+          const fila = carga.new;
+          if (!fila || !CLAVES_SINCRONIZADAS.includes(fila.clave)) return;
+          if (localStorage.getItem(fila.clave) === fila.valor) return;
+          setItemLocalOriginal.call(localStorage, fila.clave, fila.valor);
+          avisarCambiosRemotos();
+        })
+        .subscribe();
+    }
+
+    async function iniciarSincronizacionSupabase() {
+      if (!clienteSupabase) {
+        mostrarEstadoSincronizacion('Supabase no está configurado. Se usará almacenamiento local.', true);
+        return false;
+      }
+
+      const { data, error } = await clienteSupabase
+        .from('estado_aplicacion')
+        .select('clave, valor');
+
+      if (error) {
+        mostrarEstadoSincronizacion('No se pudo conectar con Supabase. Revisa la tabla y sus permisos.', true);
+        console.error('Error al cargar datos de Supabase:', error);
+        return false;
+      }
+
+      let huboCambios = false;
+      if (data.length === 0) {
+        CLAVES_SINCRONIZADAS.forEach(clave => {
+          const valor = localStorage.getItem(clave);
+          if (valor !== null) cambiosPendientesNube.set(clave, valor);
+        });
+        sincronizacionLista = true;
+        await enviarCambiosPendientes();
+      } else {
+        data.forEach(fila => {
+          if (!CLAVES_SINCRONIZADAS.includes(fila.clave)) return;
+          if (localStorage.getItem(fila.clave) !== fila.valor) {
+            setItemLocalOriginal.call(localStorage, fila.clave, fila.valor);
+            huboCambios = true;
+          }
+        });
+        sincronizacionLista = true;
+      }
+
+      escucharCambiosRemotos();
+      mostrarEstadoSincronizacion('Conectado con Supabase');
+      return huboCambios;
+    }
+
     const secciones = [
       'dashboard', 'gastos', 'compra', 'mi-cuadre', 'retiro-caja', 'cuadre-cajera', 'cuadre-delivery', 'nomina', 'credito-empleado', 'vacaciones', 
       'reportes', 'inmuebles-equipos', 'confirmacion-transferencias', 'registro-empleado', 
@@ -7673,7 +7807,12 @@ function imprimirTicketTransferenciaDirecto(t) {
     }
 
     // Inicialización al cargar la página
-    window.onload = function() {
+    window.onload = async function() {
+      const datosActualizadosDesdeNube = await iniciarSincronizacionSupabase();
+      if (datosActualizadosDesdeNube) {
+        location.reload();
+        return;
+      }
       const hoyStr = new Date().toISOString().split('T')[0];
       fijarFechasPorDefecto();
       if(document.getElementById('emp-fecha-cumple')) document.getElementById('emp-fecha-cumple').value = '1995-01-01';

@@ -260,7 +260,7 @@
       </div>
 
       <!-- LISTADO DE GASTOS CON BÚSQUEDA INTELIGENTE -->
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+      <div id="contenedor-historial-gastos" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
         <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
           <h3 class="text-lg font-bold text-slate-800">Gastos Registrados</h3>
           <div class="w-full sm:w-auto">
@@ -352,19 +352,22 @@
       </div>
 
       <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4"><h3 class="text-lg font-bold text-slate-800">Historial de Compras y Pagos a Proveedores</h3><input type="text" id="buscador-compras" oninput="renderizarCompras()" placeholder="🔍 Buscar por proveedor, factura o tipo..." class="px-4 py-2 border rounded-xl text-xs w-full md:w-80 outline-none focus:border-indigo-500"></div>
-        <table class="w-full text-left border-collapse">
-          <thead><tr class="border-b text-xs text-slate-400 uppercase"><th class="py-3 px-4">Fecha</th><th class="py-3 px-4">Proveedor / Factura</th><th class="py-3 px-4">Tipo</th><th class="py-3 px-4">Origen</th><th class="py-3 px-4">Monto</th><th class="py-3 px-4 text-center">Acción</th></tr></thead>
-          <tbody id="tabla-compras" class="divide-y text-sm"></tbody>
-        </table>
-      </div>
-
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4"><h3 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-file-invoice-dollar text-indigo-600 mr-1.5"></i> Cuentas por Pagar (Compras a Crédito)</h3><div class="flex gap-2 w-full md:w-auto"><select id="filtro-estado-cxp" onchange="renderizarCuentasPorPagar()" class="px-3 py-2 border rounded-xl text-xs"><option value="">Todos los estados</option><option value="Pendiente">Pendiente</option><option value="Pagada">Pagada</option></select><input type="text" id="buscador-cxp" oninput="renderizarCuentasPorPagar()" placeholder="🔍 Buscar por proveedor o factura..." class="px-3 py-2 border rounded-xl text-xs w-full md:w-64 outline-none focus:border-indigo-500"></div></div>
         <table class="w-full text-left border-collapse">
           <thead><tr class="border-b text-xs text-slate-400 uppercase"><th class="py-3 px-4">Proveedor / Factura</th><th class="py-3 px-4">Fecha Compra</th><th class="py-3 px-4">Vencimiento</th><th class="py-3 px-4">Monto</th><th class="py-3 px-4">Estado</th><th class="py-3 px-4 text-center">Acciones</th></tr></thead>
           <tbody id="tabla-cuentas-por-pagar" class="divide-y text-sm"></tbody>
         </table>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3"><h3 class="text-lg font-bold text-slate-800">Historial de Compras y Pagos a Proveedores</h3><button type="button" onclick="toggleHistorialCompras()" id="btn-toggle-historial-compras" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow whitespace-nowrap"><i class="fa-solid fa-eye mr-1"></i> Ver Historial</button></div>
+        <div id="contenedor-historial-compras" class="hidden mt-4 space-y-3">
+          <input type="text" id="buscador-compras" oninput="renderizarCompras()" placeholder="🔍 Buscar por proveedor, factura o tipo..." class="px-4 py-2 border rounded-xl text-xs w-full md:w-80 outline-none focus:border-indigo-500">
+          <table class="w-full text-left border-collapse">
+            <thead><tr class="border-b text-xs text-slate-400 uppercase"><th class="py-3 px-4">Fecha</th><th class="py-3 px-4">Proveedor / Factura</th><th class="py-3 px-4">Tipo</th><th class="py-3 px-4">Origen</th><th class="py-3 px-4">Monto</th><th class="py-3 px-4 text-center">Acción</th></tr></thead>
+            <tbody id="tabla-compras" class="divide-y text-sm"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -385,7 +388,7 @@
         </form>
       </div>
 
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <div id="contenedor-historial-ventas-entradas" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4"><h3 class="text-lg font-bold text-slate-800">Historial de Ventas y Entradas de Efectivo</h3><input type="text" id="buscador-ventas-entradas" oninput="renderizarVentasEntradas()" placeholder="🔍 Buscar por fecha, motivo o cuenta destino..." class="px-4 py-2 border rounded-xl text-xs w-full md:w-80 outline-none focus:border-indigo-500"></div>
         <table class="w-full text-left border-collapse">
           <thead><tr class="border-b text-xs text-slate-400 uppercase"><th class="py-3 px-4">Fecha</th><th class="py-3 px-4">Motivo</th><th class="py-3 px-4">Destino</th><th class="py-3 px-4">Monto</th><th class="py-3 px-4 text-center">Acción</th></tr></thead>
@@ -432,17 +435,17 @@
       <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
         <form id="form-mi-cuadre" onsubmit="guardarMiCuadre(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div><label class="block text-xs font-semibold mb-1">Fecha *</label><input type="date" id="mi-cuadre-fecha" required onchange="actualizarRetiroMiCuadre()" class="w-full px-4 py-2 border rounded-xl text-sm"></div>
-          <div><label class="block text-xs font-semibold mb-1">Delivery *</label><select id="mi-cuadre-empleado" required onchange="actualizarSucursalMiCuadre()" class="w-full px-4 py-2 border rounded-xl text-sm font-semibold"></select></div>
+          <div><label class="block text-xs font-semibold mb-1">Cajera *</label><select id="mi-cuadre-empleado" required onchange="actualizarSucursalMiCuadre()" class="w-full px-4 py-2 border rounded-xl text-sm font-semibold"></select></div>
           <div><label class="block text-xs font-semibold mb-1">Sucursal</label><select id="mi-cuadre-sucursal" class="w-full px-4 py-2 border rounded-xl text-sm font-semibold"></select></div>
           <div><label class="block text-xs font-semibold mb-1">Ventas del día ($) *</label><input type="number" step="0.01" min="0" id="mi-cuadre-ventas" required oninput="calcularMiCuadre()" class="w-full px-4 py-2 border rounded-xl text-sm"></div>
-          <div class="md:col-span-3 grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+          <div id="mi-cuadre-grid-principal" class="md:col-span-3 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_16rem_minmax(0,1fr)] gap-4 items-start">
             <div class="bg-slate-50 border rounded-xl p-4">
               <h3 class="font-bold text-slate-700 text-sm mb-3">Desglose del efectivo recibido</h3>
               <div class="grid grid-cols-1 gap-1 text-xs max-w-sm">
               <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $1</label><input type="number" min="0" step="1" id="mi-efectivo-1" placeholder="0" oninput="calcularMiCuadre()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
               <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $5</label><input type="number" min="0" step="1" id="mi-efectivo-5" placeholder="0" oninput="calcularMiCuadre()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
               <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $10</label><input type="number" min="0" step="1" id="mi-efectivo-10" placeholder="0" oninput="calcularMiCuadre()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
-              <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $20</label><input type="number" min="0" step="1" id="mi-efectivo-20" placeholder="0" oninput="calcularMiCuadre()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
+              <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $25</label><input type="number" min="0" step="1" id="mi-efectivo-25" placeholder="0" oninput="calcularMiCuadre()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
               <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $50</label><input type="number" min="0" step="1" id="mi-efectivo-50" placeholder="0" oninput="calcularMiCuadre()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
               <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $100</label><input type="number" min="0" step="1" id="mi-efectivo-100" placeholder="0" oninput="calcularMiCuadre()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
               <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $200</label><input type="number" min="0" step="1" id="mi-efectivo-200" placeholder="0" oninput="calcularMiCuadre()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
@@ -458,20 +461,25 @@
                 <p id="mi-cuadre-retiro-detalle" class="text-[10px] text-slate-500 mt-1">Sin retiros registrados para esta fecha.</p>
               </div>
             </div>
-            <div class="bg-slate-50 border rounded-xl p-4">
+            <div id="mi-cuadre-resumen-panel" class="grid grid-cols-1 gap-4 bg-indigo-50 border border-indigo-200 rounded-xl p-4 text-base self-stretch content-center">
+              <div><p class="text-xs text-slate-500 font-semibold">Efectivo esperado</p><strong id="mi-cuadre-resumen-esperado" class="text-2xl font-black text-indigo-700">$0.00</strong></div>
+              <div><p class="text-xs text-slate-500 font-semibold">Efectivo contado</p><strong id="mi-cuadre-resumen-contado" class="text-2xl font-black text-indigo-700">$0.00</strong></div>
+              <div><p class="text-xs text-slate-500 font-semibold">Diferencia</p><strong id="mi-cuadre-resumen-diferencia" class="text-2xl font-black">$0.00</strong></div>
+            </div>
+            <div class="bg-slate-50 border rounded-xl p-4 flex flex-col">
               <h3 class="font-bold text-slate-700 text-sm mb-3">Transferencias declaradas por el empleado</h3>
               <div class="grid grid-cols-1 lg:grid-cols-3 gap-2 text-xs font-semibold mb-1"><span>Referencia</span><span>Cuenta o banco reportado</span><span>Monto ($)</span></div>
               <div class="grid grid-cols-1 lg:grid-cols-3 gap-2 mb-2"><input id="mi-trans-1-ref" placeholder="Ej: Ref. 123" class="px-3 py-2 border rounded-lg text-xs"><select id="mi-trans-1-cuenta" class="px-3 py-2 border rounded-lg text-xs"></select><input type="number" step="0.01" min="0" id="mi-trans-1-monto" placeholder="0.00" oninput="calcularMiCuadre()" class="px-3 py-2 border rounded-lg text-xs"></div>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-2 mb-2"><input id="mi-trans-2-ref" placeholder="Referencia opcional" class="px-3 py-2 border rounded-lg text-xs"><select id="mi-trans-2-cuenta" class="px-3 py-2 border rounded-lg text-xs"></select><input type="number" step="0.01" min="0" id="mi-trans-2-monto" placeholder="0.00" oninput="calcularMiCuadre()" class="px-3 py-2 border rounded-lg text-xs"></div>
               <div class="grid grid-cols-1 lg:grid-cols-3 gap-2"><input id="mi-trans-3-ref" placeholder="Referencia opcional" class="px-3 py-2 border rounded-lg text-xs"><select id="mi-trans-3-cuenta" class="px-3 py-2 border rounded-lg text-xs"></select><input type="number" step="0.01" min="0" id="mi-trans-3-monto" placeholder="0.00" oninput="calcularMiCuadre()" class="px-3 py-2 border rounded-lg text-xs"></div>
+              <div class="mt-3 pt-3 border-t border-dashed border-slate-300"><label class="block text-xs font-semibold mb-1">Observaciones</label><textarea id="mi-cuadre-observacion" rows="2" placeholder="Detalle para la revisión del administrador" class="w-full px-3 py-2 border rounded-xl text-sm"></textarea></div>
+              <button type="submit" class="mt-3 w-full bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow"><i class="fa-solid fa-paper-plane mr-1"></i> Enviar a revisión</button>
             </div>
           </div>
-          <div class="md:col-span-3"><label class="block text-xs font-semibold mb-1">Observaciones</label><textarea id="mi-cuadre-observacion" rows="2" placeholder="Detalle para la revisión del administrador" class="w-full px-4 py-2 border rounded-xl text-sm"></textarea></div>
-          <div class="md:col-span-3 flex justify-end"><button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm shadow"><i class="fa-solid fa-paper-plane mr-1"></i> Enviar a revisión</button></div>
         </form>
       </div>
 
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <div id="contenedor-historial-mi-cuadre" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4"><h3 class="text-lg font-bold text-slate-800">Cuadres enviados</h3><div class="flex gap-2 w-full md:w-auto items-center"><span class="text-xs text-slate-500 whitespace-nowrap">Nada afecta saldos mientras esté pendiente</span><select id="filtro-sucursal-mi-cuadre" onchange="renderizarMiCuadre()" class="px-3 py-2 border rounded-xl text-xs"><option value="">Todas las sucursales</option></select><select id="filtro-estado-mi-cuadre" onchange="renderizarMiCuadre()" class="px-3 py-2 border rounded-xl text-xs"><option value="">Todos los estados</option><option value="Pendiente">Pendiente</option><option value="Revisado">Revisado</option><option value="Confirmado">Confirmado</option></select><input type="text" id="buscador-mi-cuadre" oninput="renderizarMiCuadre()" placeholder="🔍 Buscar por cajera o fecha..." class="px-3 py-2 border rounded-xl text-xs w-full md:w-64 outline-none focus:border-indigo-500"></div></div>
         <div class="overflow-x-auto"><table class="w-full text-left border-collapse min-w-[1100px]"><thead><tr class="border-b text-xs text-slate-400 uppercase"><th class="py-3 px-4">Fecha / Empleado</th><th class="py-3 px-4">Ventas</th><th class="py-3 px-4">Efectivo</th><th class="py-3 px-4">Transferencias</th><th class="py-3 px-4">Diferencia</th><th class="py-3 px-4">Estado</th><th class="py-3 px-4">Destino al confirmar</th><th class="py-3 px-4 text-center">Acciones</th></tr></thead><tbody id="tabla-mi-cuadre" class="divide-y text-sm"></tbody></table></div>
       </div>
@@ -489,29 +497,36 @@
 
       <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
         <form id="form-retiro-caja" onsubmit="guardarRetiroCaja(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div><label class="block text-xs font-semibold mb-1">Fecha *</label><input type="date" id="retiro-fecha" required class="w-full px-4 py-2 border rounded-xl text-sm"></div>
-          <div><label class="block text-xs font-semibold mb-1">Cajera / Empleado *</label><select id="retiro-empleado" required onchange="actualizarBovedaRetiro()" class="w-full px-4 py-2 border rounded-xl text-sm font-semibold"></select></div>
+          <div><label class="block text-xs font-semibold mb-1">Fecha (día actual)</label><input type="date" id="retiro-fecha" required readonly class="w-full px-4 py-2 border rounded-xl text-sm bg-slate-100 cursor-not-allowed"></div>
+          <div><label class="block text-xs font-semibold mb-1">Cajera *</label><select id="retiro-empleado" required onchange="actualizarBovedaRetiro()" class="w-full px-4 py-2 border rounded-xl text-sm font-semibold"></select></div>
           <div>
             <label class="block text-xs font-semibold mb-1 text-emerald-700">Bóveda destino asignada (fija)</label>
             <input type="text" id="retiro-boveda-nombre" readonly placeholder="Selecciona una cajera" class="w-full px-4 py-2 border border-emerald-300 bg-emerald-50 rounded-xl text-sm font-semibold text-emerald-800">
           </div>
-          <div><label class="block text-xs font-semibold mb-1">Monto a retirar ($) *</label><input type="number" step="0.01" min="0.01" id="retiro-monto" required placeholder="Ej: 40000" class="w-full px-4 py-2 border rounded-xl text-sm"></div>
-          <div class="md:col-span-2"><label class="block text-xs font-semibold mb-1">Motivo del retiro *</label><input type="text" id="retiro-motivo" required placeholder='Ej: &quot;Dame 40 mil pesos&quot; - Pago a proveedor' class="w-full px-4 py-2 border rounded-xl text-sm"></div>
+          <div class="md:col-span-3"><label class="block text-xs font-semibold mb-1">Motivo del retiro *</label><input type="text" id="retiro-motivo" required placeholder='Ej: &quot;Dame 40 mil pesos&quot; - Pago a proveedor' class="w-full px-4 py-2 border rounded-xl text-sm"></div>
 
-          <div class="md:col-span-3 bg-slate-50 border rounded-xl p-4">
-            <h3 class="font-bold text-slate-700 text-sm mb-3">Desglose del efectivo entregado a la cajera</h3>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs max-w-4xl">
-              <div class="flex items-center gap-2"><label class="w-14 shrink-0 font-semibold">$1</label><input type="number" min="0" step="1" id="retiro-den-1" placeholder="0" class="w-full px-2 py-1 border rounded-lg text-right"></div>
-              <div class="flex items-center gap-2"><label class="w-14 shrink-0 font-semibold">$5</label><input type="number" min="0" step="1" id="retiro-den-5" placeholder="0" class="w-full px-2 py-1 border rounded-lg text-right"></div>
-              <div class="flex items-center gap-2"><label class="w-14 shrink-0 font-semibold">$10</label><input type="number" min="0" step="1" id="retiro-den-10" placeholder="0" class="w-full px-2 py-1 border rounded-lg text-right"></div>
-              <div class="flex items-center gap-2"><label class="w-14 shrink-0 font-semibold">$20</label><input type="number" min="0" step="1" id="retiro-den-20" placeholder="0" class="w-full px-2 py-1 border rounded-lg text-right"></div>
-              <div class="flex items-center gap-2"><label class="w-14 shrink-0 font-semibold">$50</label><input type="number" min="0" step="1" id="retiro-den-50" placeholder="0" class="w-full px-2 py-1 border rounded-lg text-right"></div>
-              <div class="flex items-center gap-2"><label class="w-14 shrink-0 font-semibold">$100</label><input type="number" min="0" step="1" id="retiro-den-100" placeholder="0" class="w-full px-2 py-1 border rounded-lg text-right"></div>
-              <div class="flex items-center gap-2"><label class="w-14 shrink-0 font-semibold">$200</label><input type="number" min="0" step="1" id="retiro-den-200" placeholder="0" class="w-full px-2 py-1 border rounded-lg text-right"></div>
-              <div class="flex items-center gap-2"><label class="w-14 shrink-0 font-semibold">$500</label><input type="number" min="0" step="1" id="retiro-den-500" placeholder="0" class="w-full px-2 py-1 border rounded-lg text-right"></div>
-              <div class="flex items-center gap-2"><label class="w-16 shrink-0 font-semibold">$1,000</label><input type="number" min="0" step="1" id="retiro-den-1000" placeholder="0" class="w-full px-2 py-1 border rounded-lg text-right"></div>
-              <div class="flex items-center gap-2"><label class="w-16 shrink-0 font-semibold">$2,000</label><input type="number" min="0" step="1" id="retiro-den-2000" placeholder="0" class="w-full px-2 py-1 border rounded-lg text-right"></div>
-              <div class="flex items-center gap-2 col-span-2"><label class="w-20 shrink-0 font-semibold">Otros</label><input type="number" min="0" step="0.01" id="retiro-den-otros" placeholder="0.00" class="w-full px-2 py-1 border rounded-lg text-right"></div>
+          <div class="md:col-span-3 grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+            <div class="bg-slate-50 border rounded-xl p-4">
+              <h3 class="font-bold text-slate-700 text-sm mb-3">Desglose del efectivo entregado a la cajera</h3>
+              <div class="grid grid-cols-1 gap-1 text-xs max-w-sm">
+                <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $1</label><input type="number" min="0" step="1" id="retiro-den-1" placeholder="0" oninput="calcularMontoRetiro()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
+                <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $5</label><input type="number" min="0" step="1" id="retiro-den-5" placeholder="0" oninput="calcularMontoRetiro()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
+                <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $10</label><input type="number" min="0" step="1" id="retiro-den-10" placeholder="0" oninput="calcularMontoRetiro()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
+                <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $25</label><input type="number" min="0" step="1" id="retiro-den-25" placeholder="0" oninput="calcularMontoRetiro()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
+                <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $50</label><input type="number" min="0" step="1" id="retiro-den-50" placeholder="0" oninput="calcularMontoRetiro()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
+                <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $100</label><input type="number" min="0" step="1" id="retiro-den-100" placeholder="0" oninput="calcularMontoRetiro()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
+                <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $200</label><input type="number" min="0" step="1" id="retiro-den-200" placeholder="0" oninput="calcularMontoRetiro()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
+                <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $500</label><input type="number" min="0" step="1" id="retiro-den-500" placeholder="0" oninput="calcularMontoRetiro()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
+                <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $1,000</label><input type="number" min="0" step="1" id="retiro-den-1000" placeholder="0" oninput="calcularMontoRetiro()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
+                <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Billetes de $2,000</label><input type="number" min="0" step="1" id="retiro-den-2000" placeholder="0" oninput="calcularMontoRetiro()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
+                <div class="flex items-center gap-2"><label class="w-32 shrink-0 font-semibold">Monedas / otros</label><input type="number" min="0" step="0.01" id="retiro-den-otros" placeholder="0.00" oninput="calcularMontoRetiro()" class="w-20 px-2 py-1 border rounded-lg text-right"></div>
+              </div>
+            </div>
+            <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-5 flex flex-col justify-center items-center text-center h-full">
+              <p class="text-sm text-slate-500 font-semibold">Monto a retirar (calculado por el desglose)</p>
+              <input type="text" id="retiro-monto" readonly disabled value="$0.00" class="w-full text-center bg-transparent border-0 text-4xl font-black text-indigo-700 cursor-not-allowed">
+              <input type="hidden" id="retiro-monto-valor" value="0">
+              <p class="text-[11px] text-slate-500 mt-1">El monto sale automáticamente de la cantidad de billetes ingresada.</p>
             </div>
           </div>
 
@@ -519,7 +534,7 @@
         </form>
       </div>
 
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <div id="contenedor-historial-retiros-caja" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4"><h3 class="text-lg font-bold text-slate-800">Retiros Registrados</h3><div class="flex gap-2 w-full md:w-auto"><select id="filtro-empleado-retiro-caja" onchange="renderizarRetirosCaja()" class="px-3 py-2 border rounded-xl text-xs"><option value="">Todas las cajeras</option></select><input type="text" id="buscador-retiros-caja" oninput="renderizarRetirosCaja()" placeholder="🔍 Buscar por cajera, fecha o motivo..." class="px-3 py-2 border rounded-xl text-xs w-full md:w-64"></div></div>
         <div class="overflow-x-auto"><table class="w-full text-left border-collapse min-w-[900px]"><thead><tr class="border-b text-xs text-slate-400 uppercase"><th class="py-3 px-4">No. / Fecha</th><th class="py-3 px-4">Cajera</th><th class="py-3 px-4">Monto</th><th class="py-3 px-4">Bóveda destino</th><th class="py-3 px-4">Motivo</th><th class="py-3 px-4">Estado</th><th class="py-3 px-4 text-center">Acciones</th></tr></thead><tbody id="tabla-retiros-caja" class="divide-y text-sm"></tbody></table></div>
       </div>
@@ -542,7 +557,7 @@
           <div><label class="block text-xs font-semibold mb-1">Transferencias recibidas ($)</label><input type="number" step="0.01" min="0" id="cuadre-transferencias" placeholder="0.00" oninput="calcularCuadreCajera()" class="w-full px-4 py-2 border rounded-xl text-sm"></div>
           <div><label class="block text-xs font-semibold mb-1">Dinero retirado / otros ($)</label><input type="number" step="0.01" min="0" id="cuadre-retiros" placeholder="0.00" oninput="calcularCuadreCajera()" class="w-full px-4 py-2 border rounded-xl text-sm"></div>
 
-          <div class="md:col-span-3 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_19rem_minmax(20rem,1fr)] gap-4 bg-slate-50 border rounded-xl p-3 items-stretch">
+          <div id="cuadre-cajera-grid-principal" class="md:col-span-3 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_19rem_minmax(20rem,1fr)] gap-4 bg-slate-50 border rounded-xl p-3 items-stretch">
             <div>
             <h3 class="font-bold text-slate-700 text-sm mb-3">Desglose del efectivo entregado</h3>
             <div class="flex flex-col gap-1 text-xs max-w-md">
@@ -559,7 +574,7 @@
               <div class="flex items-center gap-2"><label class="w-28 font-semibold">Monedas / otros</label><input type="number" step="0.01" min="0" id="caj-den-otros" placeholder="0.00" oninput="calcularCuadreCajera()" class="w-24 px-2 py-1 border rounded-lg text-right"></div>
             </div>
             </div>
-            <div class="grid grid-cols-1 gap-5 bg-indigo-50 border border-indigo-200 rounded-xl p-5 text-base self-stretch content-center min-h-[23rem]">
+            <div id="cuadre-cajera-resumen-panel" class="grid grid-cols-1 gap-5 bg-indigo-50 border border-indigo-200 rounded-xl p-5 text-base self-stretch content-center min-h-[23rem]">
               <div><p class="text-sm text-slate-500 font-semibold">Efectivo esperado</p><strong id="cuadre-efectivo-esperado" class="text-4xl font-black text-indigo-700">$0.00</strong></div>
               <div><p class="text-sm text-slate-500 font-semibold">Efectivo contado</p><strong id="cuadre-efectivo-contado" class="text-4xl font-black text-indigo-700">$0.00</strong></div>
               <div><p class="text-sm text-slate-500 font-semibold">Diferencia</p><strong id="cuadre-diferencia" class="text-4xl font-black">$0.00</strong></div>
@@ -578,7 +593,7 @@
         </form>
       </div>
 
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <div id="contenedor-historial-cuadres-cajera" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
         <div class="flex justify-between items-center mb-4"><h3 class="text-lg font-bold text-slate-800">Historial de Cuadres de Cajera</h3><div class="flex gap-2"><select id="filtro-sucursal-cuadres-cajera" onchange="renderizarCuadresCajera()" class="px-3 py-2 border rounded-xl text-xs"><option value="">Todas las sucursales</option></select><input id="buscador-cuadres-cajera" oninput="renderizarCuadresCajera()" placeholder="Buscar cajera, sucursal o fecha" class="px-3 py-2 border rounded-xl text-xs w-64"></div></div>
         <div class="overflow-x-auto"><table class="w-full text-left border-collapse min-w-[900px]"><thead><tr class="border-b text-xs text-slate-400 uppercase"><th class="py-3 px-4">Fecha</th><th class="py-3 px-4">Sucursal / Cajera</th><th class="py-3 px-4">Ventas</th><th class="py-3 px-4">Contado</th><th class="py-3 px-4">Diferencia</th><th class="py-3 px-4 text-center">Acciones</th></tr></thead><tbody id="tabla-cuadres-cajera" class="divide-y text-sm"></tbody></table></div>
       </div>
@@ -1251,6 +1266,16 @@
         </div>
       </div>
 
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <h3 class="text-base font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-motorcycle text-indigo-600"></i> Repartidores (Delivery)</h3>
+        <p class="text-xs text-slate-500">Solo los empleados marcados aquí como Delivery aparecerán disponibles para asignarles pedidos. Si un empleado no está en esta lista, su nombre no aparecerá al crear un nuevo pedido.</p>
+        <div>
+          <label class="block text-xs font-semibold mb-1">Empleado que será delivery</label>
+          <div class="flex gap-2"><select id="select-empleado-delivery" class="px-3 py-2 border rounded-xl text-xs flex-1"></select><button type="button" onclick="agregarDeliveryAsignado()" class="bg-indigo-600 text-white text-xs font-bold px-4 py-2 rounded-xl">Marcar como Delivery</button></div>
+        </div>
+        <div id="lista-deliveries-config" class="space-y-1 text-xs"></div>
+      </div>
+
       <!-- GESTIÓN DE TIPOS DE GASTO -->
       <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
         <h3 class="text-base font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-tags text-indigo-600"></i> Gestión de Tipos de Gasto</h3>
@@ -1315,7 +1340,6 @@
               <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-panel-cuadre-cajera" class="rounded"> Cuadre Cajera</label>
               <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-panel-mi-cuadre" class="rounded"> Mi cuadre</label>
               <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-panel-retiro-caja" class="rounded"> Retiro de Caja</label>
-              <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-panel-gestor-pedidos" class="rounded"> Gestor de Pedidos (Módulo Completo)</label>
               <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-panel-delivery" class="rounded"> Delivery y Comisiones</label>
               <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-panel-pedidos-editados" class="rounded"> Pedidos Editados (Auditoría)</label>
               <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-panel-registro-empleado" class="rounded"> Registro de Empleados</label>
@@ -1328,7 +1352,7 @@
               <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-panel-parametros" class="rounded"> Parámetros del Sistema</label>
             </div>
             <hr class="my-1">
-            <p class="text-xs font-bold text-slate-700 uppercase">Permisos Específicos Sub-paneles Gestor de Pedidos:</p>
+            <p class="text-xs font-bold text-slate-700 uppercase">Permisos Específicos Sub-paneles Gestor de Pedidos (controlan también el acceso al módulo):</p>
             <div class="grid grid-cols-1 sm:grid-cols-1 gap-2 text-xs">
               <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-subpanel-nuevo-pedido" class="rounded"> Ver / Usar "Registrar Nuevo Pedido para la Calle"</label>
               <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-subpanel-pedidos-activos" class="rounded"> Ver / Usar "Pedidos Activos en Ruta y Retorno"</label>
@@ -1340,7 +1364,7 @@
               <input type="checkbox" id="chk-perm-ver-saldos" class="rounded"> Permitir ver saldos totales en Bóvedas y Bancos (Informes / Dashboard)
             </label>
             <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
-              <input type="checkbox" id="chk-perm-ver-total-cuadre" class="rounded"> Permitir ver el monto total requerido y contado en Cuadres de Delivery
+              <input type="checkbox" id="chk-perm-ver-total-cuadre" class="rounded"> Permitir ver el resumen de Efectivo esperado / contado / diferencia (Cuadre Cajera y Mi cuadre)
             </label>
             <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
               <input type="checkbox" id="chk-perm-editar-pedidos" class="rounded"> Permitir editar pedidos activos en ruta
@@ -1353,6 +1377,21 @@
             </label>
             <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
               <input type="checkbox" id="chk-perm-ver-creditos" class="rounded"> Permitir ver historial de créditos y préstamos
+            </label>
+            <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+              <input type="checkbox" id="chk-perm-ver-gastos" class="rounded"> Permitir ver el historial de Gastos y Salidas registrados
+            </label>
+            <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+              <input type="checkbox" id="chk-perm-ver-ventas-entradas" class="rounded"> Permitir ver el historial de Ventas y Entradas de efectivo
+            </label>
+            <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+              <input type="checkbox" id="chk-perm-ver-cuadres-cajera" class="rounded"> Permitir ver el historial de Cuadre de Caja (Cuadre Cajera)
+            </label>
+            <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+              <input type="checkbox" id="chk-perm-ver-mis-cuadres" class="rounded"> Permitir ver el historial de Cuadres enviados (Mi cuadre)
+            </label>
+            <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+              <input type="checkbox" id="chk-perm-ver-retiros-caja" class="rounded"> Permitir ver el historial de Retiros de Caja registrados
             </label>
             <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
               <input type="checkbox" id="chk-perm-registrar-creditos" class="rounded"> Permitir registrar créditos y préstamos
@@ -1371,6 +1410,34 @@
             </div>
           </div>
         </div>
+        <div class="border-t pt-4">
+          <p class="text-xs font-bold text-slate-700 uppercase mb-2"><i class="fa-solid fa-list-check text-indigo-600 mr-1"></i> Empleados con permisos configurados (clic para editar)</p>
+          <div id="lista-permisos-empleados-config" class="flex flex-wrap gap-2"></div>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 mt-4">
+        <h3 class="text-base font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-key text-rose-600"></i> Clave de Autorización para Retiro de Caja</h3>
+        <p class="text-xs text-slate-500">Crea una clave independiente de tu PIN de administrador para autorizar retiros de caja. Puedes entregar esta clave a un supervisor sin revelar tu PIN principal. La clave nunca se muestra en pantalla.</p>
+        <form id="form-retiro-caja-pin" onsubmit="guardarClaveRetiroCaja(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+          <div class="md:col-span-2">
+            <label class="block text-xs font-semibold mb-1">Nueva clave de autorización (mínimo 4 caracteres)</label>
+            <input type="password" id="param-retiro-caja-pin" autocomplete="off" placeholder="Ej: 4521" class="w-full px-3 py-2 border rounded-xl text-sm tracking-widest">
+          </div>
+          <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow">Guardar Clave</button>
+        </form>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 mt-4">
+        <h3 class="text-base font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-key text-rose-600"></i> Clave de Autorización para Pedidos Activos y Retorno</h3>
+        <p class="text-xs text-slate-500">Clave independiente de tu PIN principal para autorizar en el área de "Pedido Activo y Retorno": editar o eliminar un pedido/factura, y autorizar un faltante o sobrante fuera de tolerancia al procesar el retorno. La clave nunca se muestra en pantalla.</p>
+        <form id="form-pedidos-activos-pin" onsubmit="guardarClavePedidosActivos(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+          <div class="md:col-span-2">
+            <label class="block text-xs font-semibold mb-1">Nueva clave de autorización (mínimo 4 caracteres)</label>
+            <input type="password" id="param-pedidos-activos-pin" autocomplete="off" placeholder="Ej: 7788" class="w-full px-3 py-2 border rounded-xl text-sm tracking-widest">
+          </div>
+          <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow">Guardar Clave</button>
+        </form>
       </div>
 
       <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 mt-4">
@@ -1425,6 +1492,21 @@
       </div>
       <div id="mi-cuadre-revision-contenido" class="space-y-3"></div>
       <div class="flex justify-end"><button type="button" onclick="cerrarModalMiCuadreRevision()" class="px-4 py-2 text-xs bg-indigo-600 text-white font-bold rounded-xl">Cerrar</button></div>
+    </div>
+  </div>
+
+  <!-- MODAL DE CONFIRMACIÓN DE MI CUADRE (efectivo a bóveda, transferencias por separado a su cuenta) -->
+  <div id="modal-confirmar-mi-cuadre" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 space-y-4">
+      <div class="flex justify-between items-center border-b pb-3">
+        <div><h3 class="font-bold text-slate-800 text-lg">Confirmar Cuadre</h3><p class="text-xs text-slate-500">El efectivo del desglose entra a la bóveda elegida. Cada transferencia se acredita por separado a su cuenta declarada.</p></div>
+        <button type="button" onclick="cerrarModalConfirmarMiCuadre()" class="font-bold text-lg text-slate-500">&times;</button>
+      </div>
+      <div id="mi-cuadre-confirmar-contenido" class="space-y-3"></div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button type="button" onclick="cerrarModalConfirmarMiCuadre()" class="px-4 py-2 text-xs bg-slate-100 font-bold rounded-xl">Cancelar</button>
+        <button type="button" onclick="confirmarMiCuadreDesdeModal()" class="px-4 py-2 text-xs bg-emerald-600 text-white font-bold rounded-xl">Confirmar y Aplicar</button>
+      </div>
     </div>
   </div>
 
@@ -1503,7 +1585,7 @@
         <button onclick="cerrarModalDesgloseLote()" class="font-bold text-base">&times;</button>
       </div>
 
-      <div class="bg-slate-50 p-3 rounded-xl border space-y-1 text-xs">
+      <div id="desglose-resumen-totales" class="bg-slate-50 p-3 rounded-xl border space-y-1 text-xs">
         <div class="flex justify-between font-bold text-xs">
           <span>Total a Entregar:</span>
           <span id="desglose-lbl-total-requerido" class="text-indigo-600 font-mono">$0.00</span>
@@ -1538,6 +1620,32 @@
       <div class="flex justify-end gap-2 pt-2 border-t">
         <button type="button" onclick="cerrarModalDesgloseLote()" class="px-3 py-1.5 text-xs bg-slate-100 font-bold rounded-xl">Cancelar</button>
         <button id="btn-procesar-desglose" type="button" onclick="procesarYGuardarDesglose()" class="px-5 py-1.5 text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow">Procesar y Guardar Cuadre</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL BLOQUEANTE: DIFERENCIA FUERA DE TOLERANCIA EN CUADRE DE DELIVERY (no se puede cerrar sin clave) -->
+  <div id="modal-alerta-diferencia-desglose" class="fixed inset-0 bg-slate-900/85 backdrop-blur-sm z-[60] hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 space-y-4 border-4 border-rose-500">
+      <div class="text-center space-y-1">
+        <i class="fa-solid fa-triangle-exclamation text-rose-600 text-3xl"></i>
+        <h3 class="font-black text-slate-800 text-base">Diferencia Fuera de Tolerancia</h3>
+        <p id="alerta-desglose-mensaje" class="text-sm text-slate-600"></p>
+      </div>
+      <div id="alerta-desglose-paso-pin" class="space-y-3">
+        <label class="block text-xs font-semibold mb-1">Ingrese la clave de autorización para continuar *</label>
+        <input type="password" id="alerta-desglose-pin" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();verificarPinAlertaDesglose();}" class="w-full px-3 py-2 border rounded-xl text-sm text-center tracking-widest">
+        <button type="button" onclick="verificarPinAlertaDesglose()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm px-4 py-2.5 rounded-xl">Verificar Clave</button>
+      </div>
+      <div id="alerta-desglose-paso-acciones" class="hidden space-y-2">
+        <p class="text-xs text-emerald-700 font-semibold text-center"><i class="fa-solid fa-circle-check mr-1"></i> Clave verificada. Elija una acción:</p>
+        <button type="button" onclick="elegirAccionAlertaDesglose('editar')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm px-4 py-2.5 rounded-xl"><i class="fa-solid fa-pen mr-1"></i> Editar el Desglose</button>
+        <button type="button" onclick="elegirAccionAlertaDesglose('procesar')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm px-4 py-2.5 rounded-xl"><i class="fa-solid fa-check mr-1"></i> Procesar el Cobro de Todos Modos</button>
+      </div>
+      <div id="alerta-desglose-paso-motivo" class="hidden space-y-3">
+        <label id="alerta-desglose-motivo-titulo" class="block text-xs font-semibold mb-1">Escriba el motivo del faltante o sobrante *</label>
+        <textarea id="alerta-desglose-motivo" rows="3" placeholder="Ej: Se le dio cambio de más a un cliente, factura no cobrada, etc." class="w-full px-3 py-2 border rounded-xl text-sm"></textarea>
+        <button type="button" onclick="confirmarMotivoAlertaDesglose()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm px-4 py-2.5 rounded-xl"><i class="fa-solid fa-check mr-1"></i> Confirmar y Continuar</button>
       </div>
     </div>
   </div>
@@ -1636,6 +1744,27 @@
     </div>
   </div>
 
+  <!-- MODAL DE VERIFICACIÓN DE PIN PARA ACCIONES RESTRINGIDAS (clave oculta, no en texto plano) -->
+  <div id="modal-verificar-pin" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div onclick="event.stopPropagation()" class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 space-y-4">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-lock text-rose-600 mr-1"></i> Acción Restringida</h3>
+        <button type="button" onclick="cerrarModalVerificarPin()" class="font-bold">&times;</button>
+      </div>
+      <p id="verificar-pin-descripcion" class="text-xs text-slate-600"></p>
+      <form onsubmit="confirmarVerificarPin(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold mb-1">Ingrese la clave de autorización *</label>
+          <input type="password" id="verificar-pin-valor" required autocomplete="off" class="w-full px-3 py-2 border rounded-xl text-sm tracking-widest text-center">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="cerrarModalVerificarPin()" class="px-4 py-2 text-xs bg-slate-100 font-bold rounded-xl">Cancelar</button>
+          <button type="submit" class="px-4 py-2 text-xs bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl">Autorizar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     const secciones = [
       'dashboard', 'gastos', 'compra', 'mi-cuadre', 'retiro-caja', 'cuadre-cajera', 'cuadre-delivery', 'nomina', 'credito-empleado', 'vacaciones', 
@@ -1645,6 +1774,10 @@
 
     let usuarioLogueado = JSON.parse(localStorage.getItem('sesion_activa')) || null;
     let adminPin = localStorage.getItem('mis_admin_pin') || '1234';
+    let retiroCajaPin = localStorage.getItem('mis_retiro_caja_pin') || '';
+    let pedidosActivosPin = localStorage.getItem('mis_pedidos_activos_pin') || '';
+    let bitacoraDiferenciasDesglose = JSON.parse(localStorage.getItem('mis_bitacora_diferencias_desglose')) || [];
+    let accionPendienteAlertaDesglose = null;
 
     let tiposGasto = JSON.parse(localStorage.getItem('mis_tipos_gasto')) || ['Mercancía', 'Servicios', 'Transporte', 'Personal', 'Otros', 'Gastos Fijos'];
     let gastos = JSON.parse(localStorage.getItem('mis_gastos_v2')) || [];
@@ -1666,6 +1799,7 @@
     let inmueblesEquipos = JSON.parse(localStorage.getItem('mis_inmuebles_equipos')) || [];
     let sucursalesNegocio = JSON.parse(localStorage.getItem('mis_sucursales_negocio')) || [];
     let cajerasAsignadas = JSON.parse(localStorage.getItem('mis_cajeras_asignadas')) || [];
+    let deliveriesAsignados = JSON.parse(localStorage.getItem('mis_deliveries_asignados')) || [];
     let cuadresCajera = JSON.parse(localStorage.getItem('mis_cuadres_cajera_bd')) || [];
     let miCuadres = JSON.parse(localStorage.getItem('mis_mi_cuadre_bd')) || [];
     let miCuadreEnEdicionId = null;
@@ -1791,10 +1925,6 @@
       const nuevo = document.getElementById('mi-pin-nuevo').value.trim();
       const confirmar = document.getElementById('mi-pin-confirmar').value.trim();
 
-      if (actual !== adminPin) {
-        alert('El PIN actual es incorrecto.');
-        return;
-      }
       if (nuevo.length < 4) {
         alert('El nuevo PIN debe tener al menos 4 caracteres.');
         return;
@@ -1804,10 +1934,26 @@
         return;
       }
 
-      adminPin = nuevo;
-      localStorage.setItem('mis_admin_pin', adminPin);
+      const esAdminPrincipal = !usuarioLogueado || usuarioLogueado.id === 'admin';
+      if (esAdminPrincipal) {
+        if (actual !== adminPin) {
+          alert('El PIN actual es incorrecto.');
+          return;
+        }
+        adminPin = nuevo;
+        localStorage.setItem('mis_admin_pin', adminPin);
+      } else {
+        const emp = empleados.find(x => String(x.id) === String(usuarioLogueado.id));
+        if (!emp || actual !== emp.pin) {
+          alert('El PIN actual es incorrecto.');
+          return;
+        }
+        emp.pin = nuevo;
+        localStorage.setItem('mis_empleados_bd', JSON.stringify(empleados));
+      }
+
       cerrarModalMiPin();
-      alert('PIN de administrador actualizado correctamente.');
+      alert('✅ Tu PIN se actualizó correctamente.');
     }
 
     // --- MODAL GASTOS FIJOS ---
@@ -1882,6 +2028,23 @@
       actualizarSelectsCuadreCajera();
     }
 
+    function agregarDeliveryAsignado() {
+      const empleadoId = parseInt(document.getElementById('select-empleado-delivery').value);
+      const empleado = empleados.find(e => e.id === empleadoId);
+      if (!empleado || deliveriesAsignados.includes(empleadoId)) return;
+      deliveriesAsignados.push(empleadoId);
+      localStorage.setItem('mis_deliveries_asignados', JSON.stringify(deliveriesAsignados));
+      renderizarConfiguracionSucursalesCajeras();
+      actualizarSelectDeliverysPedido();
+    }
+
+    function eliminarDeliveryAsignado(id) {
+      deliveriesAsignados = deliveriesAsignados.filter(empId => empId !== id);
+      localStorage.setItem('mis_deliveries_asignados', JSON.stringify(deliveriesAsignados));
+      renderizarConfiguracionSucursalesCajeras();
+      actualizarSelectDeliverysPedido();
+    }
+
     function renderizarConfiguracionSucursalesCajeras() {
       const select = document.getElementById('select-empleado-cajera');
       if (select) {
@@ -1900,6 +2063,20 @@
           const emp = empleados.find(e => e.id === id);
           return emp ? `<div class="flex justify-between items-center bg-slate-50 border rounded-lg px-3 py-2"><span><i class="fa-solid fa-user-check text-indigo-600 mr-1"></i>${emp.nombre}</span><button type="button" onclick="eliminarCajeraAsignada(${id})" class="text-rose-500"><i class="fa-solid fa-trash"></i></button></div>` : '';
         }).join('') : '<p class="text-slate-400 italic">No hay cajeras asignadas.</p>';
+      }
+      const selectDelivery = document.getElementById('select-empleado-delivery');
+      if (selectDelivery) {
+        selectDelivery.innerHTML = '<option value="">-- Seleccionar empleado --</option>';
+        empleados.filter(e => e.estado === 'Activo' && !deliveriesAsignados.includes(e.id)).forEach(e => {
+          selectDelivery.innerHTML += `<option value="${e.id}">${e.nombre} (${e.cargo})</option>`;
+        });
+      }
+      const listaDeliveries = document.getElementById('lista-deliveries-config');
+      if (listaDeliveries) {
+        listaDeliveries.innerHTML = deliveriesAsignados.length ? deliveriesAsignados.map(id => {
+          const emp = empleados.find(e => e.id === id);
+          return emp ? `<div class="flex justify-between items-center bg-slate-50 border rounded-lg px-3 py-2"><span><i class="fa-solid fa-motorcycle text-indigo-600 mr-1"></i>${emp.nombre}</span><button type="button" onclick="eliminarDeliveryAsignado(${id})" class="text-rose-500"><i class="fa-solid fa-trash"></i></button></div>` : '';
+        }).join('') : '<p class="text-slate-400 italic">No hay repartidores asignados. Ningún empleado aparecerá al crear un pedido.</p>';
       }
     }
 
@@ -2027,18 +2204,89 @@
     }
 
     // --- SISTEMA DE PERMISOS ADMIN Y RESTRICCIONES ---
+    let verificarPinPendienteCallback = null;
+    let verificarPinPendienteValidos = [];
+
     function verificarPermisoAdmin(accionDescripcion, callbackAccion) {
       if (!usuarioLogueado || usuarioLogueado.id === 'admin' || usuarioLogueado.cargo === 'Administrador') {
         callbackAccion();
         return;
       }
-      const pinIngresado = prompt(`🔒 ACCIÓN RESTRINGIDA: "${accionDescripcion}"\n\nEl usuario activo (${usuarioLogueado.nombre} - ${usuarioLogueado.cargo}) no tiene privilegios directos.\n\nIngrese el PIN de Administrador para autorizar:`);
-      if (pinIngresado === null) return;
-      if (pinIngresado.trim() === adminPin) {
+      abrirModalVerificarPin(accionDescripcion, [adminPin], callbackAccion);
+    }
+
+    function verificarPermisoRetiroCaja(accionDescripcion, callbackAccion) {
+      if (!usuarioLogueado || usuarioLogueado.id === 'admin' || usuarioLogueado.cargo === 'Administrador') {
         callbackAccion();
-      } else {
-        alert('❌ PIN de Administrador incorrecto. Permiso denegado.');
+        return;
       }
+      const pinesValidos = [adminPin];
+      if (retiroCajaPin) pinesValidos.push(retiroCajaPin);
+      abrirModalVerificarPin(accionDescripcion, pinesValidos, callbackAccion);
+    }
+
+    function verificarPermisoPedidosActivos(accionDescripcion, callbackAccion) {
+      if (!usuarioLogueado || usuarioLogueado.id === 'admin' || usuarioLogueado.cargo === 'Administrador') {
+        callbackAccion();
+        return;
+      }
+      const pinesValidos = [adminPin];
+      if (pedidosActivosPin) pinesValidos.push(pedidosActivosPin);
+      abrirModalVerificarPin(accionDescripcion, pinesValidos, callbackAccion);
+    }
+
+    function abrirModalVerificarPin(accionDescripcion, pinesValidos, callbackAccion) {
+      verificarPinPendienteValidos = pinesValidos;
+      verificarPinPendienteCallback = callbackAccion;
+      const descripcionEl = document.getElementById('verificar-pin-descripcion');
+      if (descripcionEl) descripcionEl.textContent = `"${accionDescripcion}" — El usuario activo (${usuarioLogueado?.nombre || ''} - ${usuarioLogueado?.cargo || ''}) no tiene privilegios directos. Ingrese la clave de autorización:`;
+      const campoValor = document.getElementById('verificar-pin-valor');
+      if (campoValor) campoValor.value = '';
+      document.getElementById('modal-verificar-pin').classList.remove('hidden');
+      setTimeout(() => campoValor?.focus(), 50);
+    }
+
+    function cerrarModalVerificarPin() {
+      document.getElementById('modal-verificar-pin').classList.add('hidden');
+      verificarPinPendienteCallback = null;
+      verificarPinPendienteValidos = [];
+    }
+
+    function confirmarVerificarPin(evento) {
+      evento.preventDefault();
+      const valor = (document.getElementById('verificar-pin-valor').value || '').trim();
+      const callback = verificarPinPendienteCallback;
+      const esValido = verificarPinPendienteValidos.includes(valor);
+      if (esValido) {
+        cerrarModalVerificarPin();
+        if (callback) callback();
+      } else {
+        alert('❌ Clave incorrecta. Permiso denegado.');
+      }
+    }
+
+    function guardarClaveRetiroCaja(evento) {
+      evento.preventDefault();
+      const clave = document.getElementById('param-retiro-caja-pin').value.trim();
+      if (clave.length < 4) { alert('La clave debe tener al menos 4 caracteres.'); return; }
+      verificarPermisoAdmin('Configurar clave de autorización para Retiro de Caja', function() {
+        retiroCajaPin = clave;
+        localStorage.setItem('mis_retiro_caja_pin', retiroCajaPin);
+        document.getElementById('form-retiro-caja-pin').reset();
+        alert('✅ Clave de autorización para Retiro de Caja actualizada.');
+      });
+    }
+
+    function guardarClavePedidosActivos(evento) {
+      evento.preventDefault();
+      const clave = document.getElementById('param-pedidos-activos-pin').value.trim();
+      if (clave.length < 4) { alert('La clave debe tener al menos 4 caracteres.'); return; }
+      verificarPermisoAdmin('Configurar clave de autorización para Pedidos Activos y Retorno', function() {
+        pedidosActivosPin = clave;
+        localStorage.setItem('mis_pedidos_activos_pin', pedidosActivosPin);
+        document.getElementById('form-pedidos-activos-pin').reset();
+        alert('✅ Clave de autorización para Pedidos Activos y Retorno actualizada.');
+      });
     }
 
     function tienePermiso(permisoKey) {
@@ -2049,9 +2297,30 @@
 
     function tieneAccesoPanel(seccionKey) {
       if (!usuarioLogueado || usuarioLogueado.id === 'admin' || usuarioLogueado.cargo === 'Administrador') return true;
+      // El acceso a Gestor de Pedidos depende solo de los 3 permisos específicos, no de un permiso general aparte
+      if (seccionKey === 'gestor-pedidos') {
+        const subpaneles = permisosEmpleados[usuarioLogueado.id]?.subpaneles || {};
+        return subpaneles.nuevo_pedido === true || subpaneles.pedidos_activos === true || subpaneles.historial_desgloses === true;
+      }
       const p = permisosEmpleados[usuarioLogueado.id];
       if (!p || !p.paneles) return true;
       return p.paneles[seccionKey] !== false;
+    }
+
+    function aplicarVisibilidadHistorial(contenedorId, permisoKey) {
+      const el = document.getElementById(contenedorId);
+      if (el) el.classList.toggle('hidden', !tienePermiso(permisoKey));
+    }
+
+    // Si se oculta el panel de resumen, el grid pasa a 2 columnas para que la columna de transferencias no quede apretada
+    function ajustarGridResumenCuadre(gridId, panelId, permisoKey, clasesConPanel, claseSinPanel) {
+      const grid = document.getElementById(gridId);
+      const panel = document.getElementById(panelId);
+      const visible = tienePermiso(permisoKey);
+      if (panel) panel.classList.toggle('hidden', !visible);
+      if (!grid) return;
+      clasesConPanel.split(' ').forEach(clase => grid.classList.toggle(clase, visible));
+      grid.classList.toggle(claseSinPanel, !visible);
     }
 
     function verificarEstadoSesion() {
@@ -2066,7 +2335,53 @@
         document.getElementById('lbl-usuario-activo').innerText = usuarioLogueado.nombre;
         document.getElementById('lbl-rol-activo').innerText = usuarioLogueado.cargo;
         aplicarRestriccionesUsuarioActivo();
+        aplicarVisibilidadMenuSegunPermisos();
       }
+    }
+
+    function aplicarVisibilidadMenuSegunPermisos() {
+      const esAdmin = !usuarioLogueado || usuarioLogueado.id === 'admin' || usuarioLogueado.cargo === 'Administrador';
+      const mapaBotones = {
+        'dashboard': 'btn-dashboard',
+        'mi-cuadre': 'btn-mi-cuadre',
+        'retiro-caja': 'btn-retiro-caja',
+        'gastos': 'btn-gastos',
+        'compra': 'btn-compra',
+        'ventas-entradas': 'btn-ventas-entradas',
+        'ganancias': 'btn-ganancias',
+        'cuadre-cajera': 'btn-cuadre-cajera',
+        'gestor-pedidos': 'btn-gestor-pedidos',
+        'delivery': 'btn-delivery',
+        'pedidos-editados': 'btn-pedidos-editados',
+        'registro-empleado': 'btn-registro-empleado',
+        'nomina': 'btn-nomina',
+        'credito-empleado': 'btn-credito-empleado',
+        'vacaciones': 'btn-vacaciones',
+        'confirmacion-transferencias': 'btn-confirmacion-transferencias',
+        'reportes': 'btn-reportes',
+        'inmuebles-equipos': 'btn-inmuebles-equipos',
+        'parametros': 'btn-parametros'
+      };
+
+      Object.entries(mapaBotones).forEach(([seccionKey, btnId]) => {
+        const btn = document.getElementById(btnId);
+        if (btn) btn.classList.toggle('hidden', !esAdmin && !tieneAccesoPanel(seccionKey));
+      });
+
+      const gruposSubmenu = [
+        { padre: 'btn-menu-finanzas-parent', contenedor: 'submenu-finanzas', hijos: ['compra', 'ventas-entradas', 'ganancias'] },
+        { padre: 'btn-menu-gestor-pedidos-parent', contenedor: 'submenu-gestor-pedidos', hijos: ['gestor-pedidos', 'delivery', 'pedidos-editados'] },
+        { padre: 'btn-menu-empleados-parent', contenedor: 'submenu-empleados', hijos: ['registro-empleado', 'nomina', 'credito-empleado', 'vacaciones'] }
+      ];
+      gruposSubmenu.forEach(grupo => {
+        const btnPadre = document.getElementById(grupo.padre);
+        const algunoVisible = esAdmin || grupo.hijos.some(sec => tieneAccesoPanel(sec));
+        if (btnPadre) btnPadre.classList.toggle('hidden', !algunoVisible);
+        if (!algunoVisible) {
+          const contenedor = document.getElementById(grupo.contenedor);
+          if (contenedor) contenedor.classList.add('hidden');
+        }
+      });
     }
 
     function aplicarRestriccionesUsuarioActivo() {
@@ -2117,7 +2432,7 @@
     select.innerHTML = '<option value="">-- Seleccionar Delivery --</option>';
 
     empleados.forEach(emp => {
-      if (emp.estado === 'Activo' && emp.cargo === 'Delivery') {
+      if (emp.estado === 'Activo' && (emp.cargo === 'Delivery' || deliveriesAsignados.includes(emp.id))) {
         select.innerHTML += `<option value="${emp.nombre}">${emp.nombre}</option>`;
       }
     });
@@ -2132,7 +2447,7 @@
     filtro.innerHTML = '<option value="">🚴 Todos los Deliverys</option>';
 
     empleados.forEach(emp => {
-      if (emp.estado === 'Activo' && emp.cargo === 'Delivery') {
+      if (emp.estado === 'Activo' && (emp.cargo === 'Delivery' || deliveriesAsignados.includes(emp.id))) {
         filtro.innerHTML += `<option value="${emp.nombre}">${emp.nombre}</option>`;
       }
     });
@@ -2152,8 +2467,7 @@
           localStorage.setItem('sesion_activa', JSON.stringify(usuarioLogueado));
           document.getElementById('login-pin').value = '';
           verificarEstadoSesion();
-          cambiarSeccion('dashboard');
-          calcularEstadisticasDashboard();
+          irASeccionPermitidaPorDefecto();
         } else { alert('❌ Clave incorrecta.'); }
       } else {
         const empId = parseInt(userVal);
@@ -2163,16 +2477,25 @@
           localStorage.setItem('sesion_activa', JSON.stringify(usuarioLogueado));
           document.getElementById('login-pin').value = '';
           verificarEstadoSesion();
-          cambiarSeccion('dashboard');
-          calcularEstadisticasDashboard();
+          irASeccionPermitidaPorDefecto();
         } else { alert('❌ PIN incorrecto.'); }
+      }
+    }
+
+    function irASeccionPermitidaPorDefecto() {
+      const seccionDisponible = secciones.find(sec => tieneAccesoPanel(sec));
+      if (seccionDisponible) {
+        cambiarSeccion(seccionDisponible);
+      } else {
+        secciones.forEach(sec => { const el = document.getElementById('sec-' + sec); if (el) el.classList.add('hidden'); });
+        alert('🚫 Su usuario no tiene ningún panel habilitado. Contacte al administrador.');
       }
     }
 
     function ocultarTodasLasSeccionesPorSeguridad() {
       secciones.forEach(sec => {
         const el = document.getElementById('sec-' + sec);
-        if (el) el.classList.toggle('hidden', sec !== 'dashboard');
+        if (el) el.classList.add('hidden');
       });
     }
 
@@ -2188,6 +2511,9 @@
     function cambiarSeccion(seccionElegida) {
       if (!tieneAccesoPanel(seccionElegida)) {
         alert('🚫 Acceso restringido: No tiene permisos asignados para visualizar este panel.');
+        if (seccionElegida !== 'dashboard') {
+          irASeccionPermitidaPorDefecto();
+        }
         return;
       }
 
@@ -2242,13 +2568,19 @@
         }
       });
 
+      // Las clases de arriba se reasignan por completo, así que se reaplica el ocultamiento por permisos
+      aplicarVisibilidadMenuSegunPermisos();
+
       if (seccionElegida === 'dashboard') calcularEstadisticasDashboard();
       if (seccionElegida === 'reportes') {
         renderizarReportesFinancieros();
         calcularEstadisticasDashboard();
       }
       if (seccionElegida === 'inmuebles-equipos') renderizarInmueblesEquipos();
-      if (seccionElegida === 'ventas-entradas') renderizarVentasEntradas();
+      if (seccionElegida === 'ventas-entradas') {
+        renderizarVentasEntradas();
+        aplicarVisibilidadHistorial('contenedor-historial-ventas-entradas', 'ver_ventas_entradas');
+      }
       if (seccionElegida === 'ganancias') renderizarGananciasPOS();
       if (seccionElegida === 'registro-empleado') renderizarEmpleados();
       if (seccionElegida === 'nomina') renderizarNomina();
@@ -2261,15 +2593,20 @@
         actualizarSelectsCuadreCajera();
         renderizarCuadresCajera();
         calcularCuadreCajera();
+        aplicarVisibilidadHistorial('contenedor-historial-cuadres-cajera', 'ver_cuadres_cajera');
+        ajustarGridResumenCuadre('cuadre-cajera-grid-principal', 'cuadre-cajera-resumen-panel', 'ver_total_cuadre', 'lg:grid-cols-[minmax(0,1fr)_19rem_minmax(20rem,1fr)]', 'lg:grid-cols-2');
       }
       if (seccionElegida === 'mi-cuadre') {
         actualizarSelectsMiCuadre();
         renderizarMiCuadre();
         calcularMiCuadre();
+        aplicarVisibilidadHistorial('contenedor-historial-mi-cuadre', 'ver_mis_cuadres');
+        ajustarGridResumenCuadre('mi-cuadre-grid-principal', 'mi-cuadre-resumen-panel', 'ver_total_cuadre', 'lg:grid-cols-[minmax(0,1fr)_16rem_minmax(0,1fr)]', 'lg:grid-cols-2');
       }
       if (seccionElegida === 'retiro-caja') {
         actualizarSelectsRetiroCaja();
         renderizarRetirosCaja();
+        aplicarVisibilidadHistorial('contenedor-historial-retiros-caja', 'ver_retiros_caja');
       }
       if (seccionElegida === 'vacaciones') {
         actualizarSelectVacaciones();
@@ -2293,6 +2630,7 @@
         cargarParametrosEnPantalla();
         actualizarSelectPermisosEmpleados();
         renderizarConfiguracionSucursalesCajeras();
+        renderizarListaPermisosEmpleadosConfig();
       }
       if (['confirmacion-transferencias', 'gastos', 'ventas-entradas', 'parametros', 'gestor-pedidos', 'nomina', 'mi-cuadre'].includes(seccionElegida)) {
         actualizarSelectsCuentasYBovedas();
@@ -2300,6 +2638,7 @@
       if (seccionElegida === 'gastos') {
         renderizarTiposGastoSelect();
         aplicarRestriccionesUsuarioActivo();
+        aplicarVisibilidadHistorial('contenedor-historial-gastos', 'ver_gastos');
       }
       if (seccionElegida === 'compra') {
         renderizarCompras();
@@ -2321,17 +2660,11 @@
         return;
       }
 
-      const p = permisosEmpleados[usuarioLogueado.id];
-      if (!p || !p.subpaneles) {
-        if (p1) p1.classList.remove('hidden');
-        if (p2) p2.classList.remove('hidden');
-        if (p3) p3.classList.remove('hidden');
-        return;
-      }
-
-      if (p1) p1.classList.toggle('hidden', p.subpaneles.nuevo_pedido === false);
-      if (p2) p2.classList.toggle('hidden', p.subpaneles.pedidos_activos === false);
-      if (p3) p3.classList.toggle('hidden', p.subpaneles.historial_desgloses === false);
+      // Sin permiso explícito, el módulo queda oculto (denegado por defecto)
+      const subpaneles = permisosEmpleados[usuarioLogueado.id]?.subpaneles || {};
+      if (p1) p1.classList.toggle('hidden', subpaneles.nuevo_pedido !== true);
+      if (p2) p2.classList.toggle('hidden', subpaneles.pedidos_activos !== true);
+      if (p3) p3.classList.toggle('hidden', subpaneles.historial_desgloses !== true);
     }
 
     // --- DASHBOARD ---
@@ -3731,23 +4064,35 @@
       const fileInput = document.getElementById('emp-foto-file');
 
       const procesarGuardadoFinal = (fotoBase64) => {
-        if (idEdit) {
-          verificarPermisoAdmin('Modificar datos de empleado', function() {
-            const emp = empleados.find(x => x.id == idEdit);
-            if (emp) {
-              emp.nombre = nombre;
-              emp.cedula = cedula;
-              emp.telefono = telefono;
-              emp.cargo = cargo;
-              emp.sueldo = sueldo;
-              emp.frecuencia = frecuencia;
-              emp.fechaIngreso = fechaIngreso;
-              emp.fechaCumple = fechaCumple;
-              emp.direccion = direccion;
-              emp.pin = pin;
-              emp.estado = estado;
-              if (fotoBase64) emp.foto = fotoBase64;
-            }
+        const ejecutarGuardado = () => {
+          if (idEdit) {
+            verificarPermisoAdmin('Modificar datos de empleado', function() {
+              const emp = empleados.find(x => x.id == idEdit);
+              if (emp) {
+                emp.nombre = nombre;
+                emp.cedula = cedula;
+                emp.telefono = telefono;
+                emp.cargo = cargo;
+                emp.sueldo = sueldo;
+                emp.frecuencia = frecuencia;
+                emp.fechaIngreso = fechaIngreso;
+                emp.fechaCumple = fechaCumple;
+                emp.direccion = direccion;
+                emp.pin = pin;
+                emp.estado = estado;
+                if (fotoBase64) emp.foto = fotoBase64;
+              }
+              localStorage.setItem('mis_empleados_bd', JSON.stringify(empleados));
+              limpiarFormularioEmpleado();
+              renderizarEmpleados();
+              actualizarSelectUsuariosLogin();
+              actualizarSelectDeliverysPedido();
+              actualizarSelectPermisosEmpleados();
+              calcularEstadisticasDashboard();
+            });
+          } else {
+            const nuevaFoto = fotoBase64 || null;
+            empleados.push({ id: Date.now(), nombre, cedula, telefono, cargo, sueldo, frecuencia, fechaIngreso, fechaCumple, direccion, pin, estado, foto: nuevaFoto });
             localStorage.setItem('mis_empleados_bd', JSON.stringify(empleados));
             limpiarFormularioEmpleado();
             renderizarEmpleados();
@@ -3755,17 +4100,14 @@
             actualizarSelectDeliverysPedido();
             actualizarSelectPermisosEmpleados();
             calcularEstadisticasDashboard();
-          });
+          }
+        };
+
+        const asignandoAdministrador = cargo === 'Administrador' && !(usuarioLogueado?.id === 'admin' || usuarioLogueado?.cargo === 'Administrador');
+        if (asignandoAdministrador) {
+          verificarPermisoAdmin('Asignar el rol de Administrador (acceso total al sistema) a un empleado', ejecutarGuardado);
         } else {
-          const nuevaFoto = fotoBase64 || null;
-          empleados.push({ id: Date.now(), nombre, cedula, telefono, cargo, sueldo, frecuencia, fechaIngreso, fechaCumple, direccion, pin, estado, foto: nuevaFoto });
-          localStorage.setItem('mis_empleados_bd', JSON.stringify(empleados));
-          limpiarFormularioEmpleado();
-          renderizarEmpleados();
-          actualizarSelectUsuariosLogin();
-          actualizarSelectDeliverysPedido();
-          actualizarSelectPermisosEmpleados();
-          calcularEstadisticasDashboard();
+          ejecutarGuardado();
         }
       };
 
@@ -3946,6 +4288,29 @@ function actualizarSelectPermisosEmpleados() {
   }
 }
 
+function renderizarListaPermisosEmpleadosConfig() {
+  const contenedor = document.getElementById('lista-permisos-empleados-config');
+  if (!contenedor) return;
+  const idsConPermisos = Object.keys(permisosEmpleados).filter(id => permisosEmpleados[id]);
+  if (!idsConPermisos.length) {
+    contenedor.innerHTML = '<p class="text-xs text-slate-400 italic">Aún no se han configurado permisos para ningún empleado.</p>';
+    return;
+  }
+  contenedor.innerHTML = idsConPermisos.map(id => {
+    const emp = empleados.find(e => String(e.id) === String(id));
+    const nombre = emp ? emp.nombre : `Empleado #${id}`;
+    return `<button type="button" onclick="seleccionarPermisosEmpleado('${id}')" class="flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 text-xs font-semibold px-3 py-1.5 rounded-lg transition"><i class="fa-solid fa-user-pen"></i> ${nombre}</button>`;
+  }).join('');
+}
+
+function seleccionarPermisosEmpleado(empleadoId) {
+  const select = document.getElementById('perm-select-empleado');
+  if (!select) return;
+  select.value = empleadoId;
+  cargarPermisosEmpleadoSeleccionado();
+  select.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
 function cargarPermisosEmpleadoSeleccionado() {
   const select = document.getElementById('perm-select-empleado');
   const empleadoId = select?.value;
@@ -3958,6 +4323,11 @@ function cargarPermisosEmpleadoSeleccionado() {
     'chk-perm-eliminar-pedidos',
     'chk-perm-editar-gastos',
     'chk-perm-ver-creditos',
+    'chk-perm-ver-gastos',
+    'chk-perm-ver-ventas-entradas',
+    'chk-perm-ver-cuadres-cajera',
+    'chk-perm-ver-mis-cuadres',
+    'chk-perm-ver-retiros-caja',
     'chk-perm-registrar-creditos',
     'chk-perm-editar-creditos',
     'chk-perm-mi-cuadre-editar',
@@ -3971,7 +4341,6 @@ function cargarPermisosEmpleadoSeleccionado() {
     'chk-panel-ganancias',
     'chk-panel-cuadre-cajera',
     'chk-panel-retiro-caja',
-    'chk-panel-gestor-pedidos',
     'chk-panel-delivery',
     'chk-panel-pedidos-editados',
     'chk-panel-registro-empleado',
@@ -4009,6 +4378,11 @@ function cargarPermisosEmpleadoSeleccionado() {
     'chk-perm-eliminar-pedidos': permisos.eliminar_pedidos,
     'chk-perm-editar-gastos': permisos.editar_gastos,
     'chk-perm-ver-creditos': permisos.ver_creditos,
+    'chk-perm-ver-gastos': permisos.ver_gastos,
+    'chk-perm-ver-ventas-entradas': permisos.ver_ventas_entradas,
+    'chk-perm-ver-cuadres-cajera': permisos.ver_cuadres_cajera,
+    'chk-perm-ver-mis-cuadres': permisos.ver_mis_cuadres,
+    'chk-perm-ver-retiros-caja': permisos.ver_retiros_caja,
     'chk-perm-registrar-creditos': permisos.registrar_creditos,
     'chk-perm-editar-creditos': permisos.editar_creditos,
     'chk-perm-mi-cuadre-editar': permisos.mi_cuadre_editar,
@@ -4034,7 +4408,6 @@ function cargarPermisosEmpleadoSeleccionado() {
     'chk-panel-cuadre-cajera': 'cuadre-cajera',
     'chk-panel-mi-cuadre': 'mi-cuadre',
     'chk-panel-retiro-caja': 'retiro-caja',
-    'chk-panel-gestor-pedidos': 'gestor-pedidos',
     'chk-panel-delivery': 'delivery',
     'chk-panel-pedidos-editados': 'pedidos-editados',
     'chk-panel-registro-empleado': 'registro-empleado',
@@ -4080,7 +4453,6 @@ function guardarPermisosEmpleado() {
       'cuadre-cajera': document.getElementById('chk-panel-cuadre-cajera').checked,
       'mi-cuadre': document.getElementById('chk-panel-mi-cuadre').checked,
       'retiro-caja': document.getElementById('chk-panel-retiro-caja').checked,
-      'gestor-pedidos': document.getElementById('chk-panel-gestor-pedidos').checked,
       delivery: document.getElementById('chk-panel-delivery').checked,
       'pedidos-editados': document.getElementById('chk-panel-pedidos-editados').checked,
       'registro-empleado': document.getElementById('chk-panel-registro-empleado').checked,
@@ -4103,6 +4475,11 @@ function guardarPermisosEmpleado() {
       eliminar_pedidos: document.getElementById('chk-perm-eliminar-pedidos').checked,
       editar_gastos: document.getElementById('chk-perm-editar-gastos').checked,
       ver_creditos: document.getElementById('chk-perm-ver-creditos').checked,
+      ver_gastos: document.getElementById('chk-perm-ver-gastos').checked,
+      ver_ventas_entradas: document.getElementById('chk-perm-ver-ventas-entradas').checked,
+      ver_cuadres_cajera: document.getElementById('chk-perm-ver-cuadres-cajera').checked,
+      ver_mis_cuadres: document.getElementById('chk-perm-ver-mis-cuadres').checked,
+      ver_retiros_caja: document.getElementById('chk-perm-ver-retiros-caja').checked,
       registrar_creditos: document.getElementById('chk-perm-registrar-creditos').checked,
       editar_creditos: document.getElementById('chk-perm-editar-creditos').checked,
       mi_cuadre_editar: document.getElementById('chk-perm-mi-cuadre-editar').checked,
@@ -4120,7 +4497,18 @@ function guardarPermisosEmpleado() {
       JSON.stringify(permisosEmpleados)
     );
 
-    alert('✅ Permisos guardados correctamente.');
+    const nombreEmpleado = empleados.find(e => String(e.id) === String(empleadoId))?.nombre || 'Empleado';
+    const resumenSubpaneles = [
+      `Nuevo pedido: ${permisosEmpleados[empleadoId].subpaneles.nuevo_pedido ? 'SÍ ve' : 'NO ve'}`,
+      `Pedidos activos: ${permisosEmpleados[empleadoId].subpaneles.pedidos_activos ? 'SÍ ve' : 'NO ve'}`,
+      `Historial de desgloses: ${permisosEmpleados[empleadoId].subpaneles.historial_desgloses ? 'SÍ ve' : 'NO ve'}`
+    ].join('\n');
+    alert(`✅ Permisos guardados para ${nombreEmpleado}.\n\nGestor de Pedidos:\n${resumenSubpaneles}\n\nRecuerda: esto solo se aplica cuando ${nombreEmpleado} inicia sesión con su propio usuario (no en tu sesión de Administrador, que siempre ve todo).`);
+
+    select.value = '';
+    cargarPermisosEmpleadoSeleccionado();
+    renderizarListaPermisosEmpleadosConfig();
+    aplicarVisibilidadMenuSegunPermisos();
   };
 
   if (
@@ -4414,19 +4802,29 @@ function guardarPermisosEmpleado() {
     }
 
     // --- RETIRO DE CAJA ---
+    function obtenerEmpleadosCajera() {
+      // Usa la misma lista de "Sucursales y Cajeras" de Parámetros que ya usa Cuadre Cajera, no el campo Cargo
+      return empleados.filter(emp => emp.estado === 'Activo' && cajerasAsignadas.includes(emp.id));
+    }
+
     function actualizarSelectsRetiroCaja() {
       const select = document.getElementById('retiro-empleado');
       if (!select) return;
+      const esAdmin = esAdministradorMiCuadre();
+      const cajeras = obtenerEmpleadosCajera();
+      const cajerasVisibles = esAdmin ? cajeras : cajeras.filter(emp => String(emp.id) === String(usuarioLogueado?.id) || String(emp.usuarioId) === String(usuarioLogueado?.id));
       const valorAnterior = select.value;
-      select.innerHTML = '<option value="">-- Seleccionar Cajera / Empleado --</option>' + empleados.map(emp => `<option value="${emp.id}">${emp.nombre}</option>`).join('');
+      select.innerHTML = '<option value="">-- Seleccionar Cajera --</option>' + cajerasVisibles.map(emp => `<option value="${emp.id}">${emp.nombre}</option>`).join('');
       select.value = valorAnterior;
+      if (!esAdmin && cajerasVisibles.length === 1) select.value = cajerasVisibles[0].id;
+      select.disabled = !esAdmin;
       actualizarBovedaRetiro();
       const fecha = document.getElementById('retiro-fecha');
-      if (fecha && !fecha.value) fecha.value = new Date().toISOString().split('T')[0];
+      if (fecha) { fecha.value = new Date().toISOString().split('T')[0]; fecha.readOnly = true; }
       const filtro = document.getElementById('filtro-empleado-retiro-caja');
       if (filtro) {
         const valorFiltro = filtro.value;
-        filtro.innerHTML = '<option value="">Todas las cajeras</option>' + empleados.map(emp => `<option value="${emp.id}">${emp.nombre}</option>`).join('');
+        filtro.innerHTML = '<option value="">Todas las cajeras</option>' + cajeras.map(emp => `<option value="${emp.id}">${emp.nombre}</option>`).join('');
         filtro.value = valorFiltro;
       }
     }
@@ -4451,7 +4849,7 @@ function guardarPermisosEmpleado() {
 
     function obtenerDesgloseRetiro() {
       const desglose = {};
-      [[1, 1], [5, 5], [10, 10], [20, 20], [50, 50], [100, 100], [200, 200], [500, 500], [1000, 1000], [2000, 2000]].forEach(([denominacion, valor]) => {
+      [[1, 1], [5, 5], [10, 10], [25, 25], [50, 50], [100, 100], [200, 200], [500, 500], [1000, 1000], [2000, 2000]].forEach(([denominacion, valor]) => {
         const cantidad = parseInt(document.getElementById(`retiro-den-${denominacion}`)?.value || '0', 10) || 0;
         desglose[`den${denominacion}`] = cantidad;
         desglose.total = (desglose.total || 0) + cantidad * valor;
@@ -4461,12 +4859,21 @@ function guardarPermisosEmpleado() {
       return desglose;
     }
 
+    function calcularMontoRetiro() {
+      const total = obtenerDesgloseRetiro().total || 0;
+      const campoValor = document.getElementById('retiro-monto-valor');
+      const campoMostrar = document.getElementById('retiro-monto');
+      if (campoValor) campoValor.value = total;
+      if (campoMostrar) campoMostrar.value = `$${total.toFixed(2)}`;
+      return total;
+    }
+
     function guardarRetiroCaja(evento) {
       evento.preventDefault();
       const fecha = document.getElementById('retiro-fecha').value;
       const empleadoId = parseInt(document.getElementById('retiro-empleado').value);
       const empleado = empleados.find(emp => emp.id === empleadoId);
-      const monto = parseFloat(document.getElementById('retiro-monto').value);
+      const monto = parseFloat(document.getElementById('retiro-monto-valor').value || '0');
       const motivo = document.getElementById('retiro-motivo').value.trim();
 
       if (!fecha || !empleado || isNaN(monto) || monto <= 0 || !motivo) {
@@ -4483,7 +4890,7 @@ function guardarPermisosEmpleado() {
 
       const desglose = obtenerDesgloseRetiro();
 
-      verificarPermisoAdmin(`Retirar $${monto.toFixed(2)} de la caja de ${empleado.nombre}`, function() {
+      verificarPermisoRetiroCaja(`Retirar $${monto.toFixed(2)} de la caja de ${empleado.nombre}`, function() {
         buscarYModificarSaldoCuenta(cuentaDestino, monto, true);
 
         const correlativoRetiro = 'RT-' + String(retirosCaja.length + 1).padStart(3, '0');
@@ -4547,7 +4954,7 @@ function guardarPermisosEmpleado() {
 
       let logoHtml = parametrosEmpresa.logo ? `<img src="${parametrosEmpresa.logo}" class="w-24 h-24 mx-auto object-contain mb-1">` : '';
 
-      const etiquetasBilletes = [[1, '$1'], [5, '$5'], [10, '$10'], [20, '$20'], [50, '$50'], [100, '$100'], [200, '$200'], [500, '$500'], [1000, '$1,000'], [2000, '$2,000']];
+      const etiquetasBilletes = [[1, '$1'], [5, '$5'], [10, '$10'], [25, '$25'], [50, '$50'], [100, '$100'], [200, '$200'], [500, '$500'], [1000, '$1,000'], [2000, '$2,000']];
       const desglose = r.desglose || {};
       const lineasDesglose = etiquetasBilletes.filter(([valor]) => (desglose[`den${valor}`] || 0) > 0).map(([valor, etiqueta]) => `<p>${etiqueta} x ${desglose[`den${valor}`]}</p>`).join('') || '<p class="italic">Sin desglose de billetes registrado</p>';
       const otrosHtml = desglose.otros ? `<p>Monedas / otros: $${desglose.otros.toFixed(2)}</p>` : '';
@@ -4766,13 +5173,14 @@ function guardarPermisosEmpleado() {
       const select = document.getElementById('mi-cuadre-empleado');
       if (!select) return;
       const esAdmin = esAdministradorMiCuadre();
-      const empleadosVisibles = esAdmin ? empleados : empleados.filter(emp => String(emp.id) === String(usuarioLogueado?.id) || String(emp.usuarioId) === String(usuarioLogueado?.id));
-      select.innerHTML = '<option value="">-- Seleccionar Empleado --</option>' + empleadosVisibles.map(emp => `<option value="${emp.id}">${emp.nombre}</option>`).join('');
+      const cajeras = obtenerEmpleadosCajera();
+      const empleadosVisibles = esAdmin ? cajeras : cajeras.filter(emp => String(emp.id) === String(usuarioLogueado?.id) || String(emp.usuarioId) === String(usuarioLogueado?.id));
+      select.innerHTML = '<option value="">-- Seleccionar Cajera --</option>' + empleadosVisibles.map(emp => `<option value="${emp.id}">${emp.nombre}</option>`).join('');
       if (empleadosVisibles.length === 1) select.value = empleadosVisibles[0].id;
       select.disabled = !esAdmin;
       [1, 2, 3].forEach(indice => {
         const cuentaSelect = document.getElementById(`mi-trans-${indice}-cuenta`);
-        if (cuentaSelect) cuentaSelect.innerHTML = obtenerOpcionesDestinoMiCuadre(cuentaSelect.value);
+        if (cuentaSelect) cuentaSelect.innerHTML = obtenerOpcionesCuentaTransferenciaMiCuadre(cuentaSelect.value);
       });
       const fecha = document.getElementById('mi-cuadre-fecha');
       if (fecha) {
@@ -4815,7 +5223,7 @@ function guardarPermisosEmpleado() {
 
     function obtenerDesgloseEfectivoMiCuadre() {
       const desglose = {};
-      [[1, 1], [5, 5], [10, 10], [20, 20], [50, 50], [100, 100], [200, 200], [500, 500], [1000, 1000], [2000, 2000]].forEach(([denominacion, valor]) => {
+      [[1, 1], [5, 5], [10, 10], [25, 25], [50, 50], [100, 100], [200, 200], [500, 500], [1000, 1000], [2000, 2000]].forEach(([denominacion, valor]) => {
         const cantidad = parseInt(document.getElementById(`mi-efectivo-${denominacion}`)?.value || '0', 10) || 0;
         desglose[`den${denominacion}`] = cantidad;
         desglose.total = (desglose.total || 0) + cantidad * valor;
@@ -4859,6 +5267,15 @@ function guardarPermisosEmpleado() {
       const retirosCajaTotal = parseFloat(document.getElementById('mi-cuadre-retiro-total')?.value || '0') || 0;
       const esperado = ventas - totalTransferencias - retirosCajaTotal;
       const diferencia = efectivo - esperado;
+      const esperadoEl = document.getElementById('mi-cuadre-resumen-esperado');
+      const contadoEl = document.getElementById('mi-cuadre-resumen-contado');
+      const diferenciaEl = document.getElementById('mi-cuadre-resumen-diferencia');
+      if (esperadoEl) esperadoEl.textContent = `$${esperado.toFixed(2)}`;
+      if (contadoEl) contadoEl.textContent = `$${efectivo.toFixed(2)}`;
+      if (diferenciaEl) {
+        diferenciaEl.textContent = `${diferencia < 0 ? '-' : ''}$${Math.abs(diferencia).toFixed(2)}`;
+        diferenciaEl.className = `text-2xl font-black ${Math.abs(diferencia) < 0.01 ? 'text-emerald-600' : (diferencia < 0 ? 'text-rose-600' : 'text-indigo-600')}`;
+      }
       return { ventas, efectivo, totalTransferencias, retirosCajaTotal, esperado, diferencia, desgloseEfectivo: obtenerDesgloseEfectivoMiCuadre() };
     }
 
@@ -4913,13 +5330,21 @@ function guardarPermisosEmpleado() {
       return html;
     }
 
+    // Sin restricción de bóveda asignada: el empleado debe poder indicar a qué banco entró cada transferencia
+    function obtenerOpcionesCuentaTransferenciaMiCuadre(valorActual = '') {
+      let html = '<option value="">-- Elegir banco o cuenta --</option>';
+      bancosNegocio.forEach(banco => { const valor = `banco_${banco.id}`; html += `<option value="${valor}" ${valor === valorActual ? 'selected' : ''}>Banco: ${banco.nombre} (${banco.numero})</option>`; });
+      cajasNegocio.forEach(caja => { const valor = `caja_${caja.id}`; html += `<option value="${valor}" ${valor === valorActual ? 'selected' : ''}>Bóveda: ${caja.nombre}</option>`; });
+      return html;
+    }
+
     function abrirModalMiCuadreRevision(cuadre) {
       const modal = document.getElementById('modal-mi-cuadre-revision');
       const contenido = document.getElementById('mi-cuadre-revision-contenido');
       if (!modal || !contenido) return;
       const color = cuadre.diferencia < -0.01 ? 'text-rose-600' : (cuadre.diferencia > 0.01 ? 'text-indigo-600' : 'text-emerald-600');
       const desglose = cuadre.desgloseEfectivo || {};
-      const billetes = [[1, '$1'], [5, '$5'], [10, '$10'], [20, '$20'], [50, '$50'], [100, '$100'], [200, '$200'], [500, '$500'], [1000, '$1,000'], [2000, '$2,000']].filter(([valor]) => (desglose[`den${valor}`] || 0) > 0).map(([valor, etiqueta]) => `${etiqueta}: ${desglose[`den${valor}`]}`).join(' | ') || 'Sin billetes registrados';
+      const billetes = [[1, '$1'], [5, '$5'], [10, '$10'], [25, '$25'], [50, '$50'], [100, '$100'], [200, '$200'], [500, '$500'], [1000, '$1,000'], [2000, '$2,000']].filter(([valor]) => (desglose[`den${valor}`] || 0) > 0).map(([valor, etiqueta]) => `${etiqueta}: ${desglose[`den${valor}`]}`).join(' | ') || 'Sin billetes registrados';
       const transferencias = cuadre.transferencias.map(transferencia => `<li>${transferencia.bancoReportado || 'Cuenta no indicada'}: $${transferencia.monto.toFixed(2)}${transferencia.referencia ? ` (${transferencia.referencia})` : ''}</li>`).join('') || '<li>Sin transferencias</li>';
       const retiroHtml = cuadre.retirosCajaTotal > 0 ? `<div class="bg-rose-50 border border-rose-200 rounded-xl p-3 text-xs"><p class="font-bold mb-1 text-rose-700">Retiro de caja del administrador (ya descontado)</p><p class="font-black text-rose-700">-$${cuadre.retirosCajaTotal.toFixed(2)}</p></div>` : '';
       contenido.innerHTML = `<div class="grid grid-cols-2 gap-3 text-sm"><div><span class="text-xs text-slate-500">Empleado</span><p class="font-bold">${cuadre.empleadoNombre}</p></div><div><span class="text-xs text-slate-500">Fecha</span><p class="font-bold">${cuadre.fecha}</p></div><div><span class="text-xs text-slate-500">Transferencias declaradas</span><p class="font-bold">$${cuadre.totalTransferencias.toFixed(2)}</p></div><div><span class="text-xs text-slate-500">Efectivo contado</span><p class="font-bold">$${cuadre.efectivoContado.toFixed(2)}</p></div></div><div class="bg-slate-50 rounded-xl p-3 text-xs"><p class="font-bold mb-1">Desglose de efectivo</p><p>${billetes}${desglose.otros ? ` | Monedas / otros: $${desglose.otros.toFixed(2)}` : ''}</p></div><div class="bg-slate-50 rounded-xl p-3 text-xs"><p class="font-bold mb-1">Transferencias reportadas</p><ul class="list-disc pl-4">${transferencias}</ul></div>${retiroHtml}<div class="grid grid-cols-2 gap-3 bg-rose-50 border border-rose-200 rounded-xl p-4"><div><span class="text-xs text-slate-500">Efectivo esperado</span><p class="font-black">$${cuadre.efectivoEsperado.toFixed(2)}</p></div><div><span class="text-xs text-slate-500">Diferencia</span><p class="font-black ${color}">${cuadre.diferencia < 0 ? '-' : ''}$${Math.abs(cuadre.diferencia).toFixed(2)}</p></div></div>${cuadre.observacion ? `<div class="text-sm"><span class="text-xs text-slate-500">Observaciones</span><p>${cuadre.observacion}</p></div>` : ''}`;
@@ -4949,9 +5374,9 @@ function guardarPermisosEmpleado() {
       tbody.innerHTML = cuadresFiltrados.map(cuadre => {
         const color = cuadre.diferencia < -0.01 ? 'text-rose-600' : (cuadre.diferencia > 0.01 ? 'text-indigo-600' : 'text-emerald-600');
         const estadoColor = cuadre.estado === 'Confirmado' ? 'bg-emerald-100 text-emerald-700' : (cuadre.estado === 'Revisado' ? 'bg-indigo-100 text-indigo-700' : 'bg-amber-100 text-amber-700');
-        const controles = cuadre.estado === 'Confirmado' ? `<span class="text-xs text-slate-500">${cuadre.nombreCuentaDestino || 'Confirmado'}</span>` : (puedeConfirmarMiCuadre() ? `<select id="mi-destino-${cuadre.id}" class="px-2 py-1 border rounded-lg text-xs">${obtenerOpcionesDestinoMiCuadre(cuadre.cuentaDestino)}</select><label class="ml-2 text-[10px] text-slate-600"><input type="checkbox" id="mi-faltante-${cuadre.id}" class="mr-1"> Cargar faltante</label>` : '<span class="text-xs text-slate-400">Pendiente de revisión</span>');
+        const controles = cuadre.estado === 'Confirmado' ? `<span class="text-xs text-slate-500">${cuadre.nombreCuentaDestino || 'Confirmado'}</span>` : (puedeConfirmarMiCuadre() ? `<button type="button" onclick="abrirModalConfirmarMiCuadre(${cuadre.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg"><i class="fa-solid fa-check mr-1"></i>Confirmar</button>` : '<span class="text-xs text-slate-400">Pendiente de revisión</span>');
         const botonEditar = puedeEditarMiCuadreAjeno() || String(cuadre.empleadoId) === String(usuarioLogueado?.id) ? `<button type="button" onclick="editarMiCuadre(${cuadre.id})" class="text-indigo-600 p-1" title="Editar cuadre"><i class="fa-solid fa-pen"></i></button>` : '';
-        const botonesRevisarConfirmar = puedeConfirmarMiCuadre() ? `<button type="button" onclick="revisarMiCuadre(${cuadre.id})" class="text-amber-600 p-1" title="Marcar como revisado y comentar"><i class="fa-solid fa-eye"></i></button><button type="button" onclick="confirmarMiCuadre(${cuadre.id})" class="text-emerald-600 p-1" title="Confirmar y aplicar"><i class="fa-solid fa-check"></i></button>` : '';
+        const botonesRevisarConfirmar = puedeConfirmarMiCuadre() ? `<button type="button" onclick="revisarMiCuadre(${cuadre.id})" class="text-amber-600 p-1" title="Marcar como revisado y comentar"><i class="fa-solid fa-eye"></i></button>` : '';
         const acciones = cuadre.estado === 'Confirmado' ? '<span class="text-xs text-emerald-600 font-semibold">Aplicado</span>' : `${botonEditar}${botonesRevisarConfirmar}${!botonEditar && !botonesRevisarConfirmar ? '<span class="text-xs text-slate-500">En revisión</span>' : ''}`;
         const comentario = cuadre.comentarioRevision ? `<br><span class="text-[10px] text-indigo-600 italic">"${cuadre.comentarioRevision}"</span>` : '';
         return `<tr><td class="py-3 px-4 text-xs">${cuadre.fecha}<br><span class="text-slate-500">${cuadre.empleadoNombre}</span>${cuadre.sucursalNombre ? `<br><span class="text-[10px] text-indigo-500">${cuadre.sucursalNombre}</span>` : ''}${cuadre.retirosCajaTotal > 0 ? `<br><span class="text-[10px] text-rose-500">Retiro: -$${cuadre.retirosCajaTotal.toFixed(2)}</span>` : ''}</td><td class="py-3 px-4 font-bold">$${cuadre.ventas.toFixed(2)}</td><td class="py-3 px-4 font-bold">$${cuadre.efectivoContado.toFixed(2)}</td><td class="py-3 px-4 font-bold">$${cuadre.totalTransferencias.toFixed(2)}</td><td class="py-3 px-4 font-black ${color}">${cuadre.diferencia < 0 ? '-' : ''}$${Math.abs(cuadre.diferencia).toFixed(2)}</td><td class="py-3 px-4"><span class="px-2 py-1 rounded-full text-[10px] font-bold ${estadoColor}">${cuadre.estado}</span>${comentario}</td><td class="py-3 px-4">${controles}</td><td class="py-3 px-4 text-center whitespace-nowrap">${acciones}</td></tr>`;
@@ -4973,7 +5398,7 @@ function guardarPermisosEmpleado() {
         document.getElementById('mi-cuadre-ventas').value = cuadre.ventas;
         document.getElementById('mi-cuadre-observacion').value = cuadre.observacion || '';
         const desglose = cuadre.desgloseEfectivo || {};
-        [1, 5, 10, 20, 50, 100, 200, 500, 1000, 2000].forEach(valor => { document.getElementById(`mi-efectivo-${valor}`).value = desglose[`den${valor}`] || ''; });
+        [1, 5, 10, 25, 50, 100, 200, 500, 1000, 2000].forEach(valor => { document.getElementById(`mi-efectivo-${valor}`).value = desglose[`den${valor}`] || ''; });
         document.getElementById('mi-efectivo-otros').value = desglose.otros || '';
         [1, 2, 3].forEach((indice, posicion) => { const transferencia = cuadre.transferencias[posicion] || {}; document.getElementById(`mi-trans-${indice}-ref`).value = transferencia.referencia || ''; document.getElementById(`mi-trans-${indice}-cuenta`).value = transferencia.cuentaReportada || ''; document.getElementById(`mi-trans-${indice}-monto`).value = transferencia.monto || ''; });
         document.getElementById('form-mi-cuadre').scrollIntoView({ behavior: 'smooth' });
@@ -5005,20 +5430,77 @@ function guardarPermisosEmpleado() {
       renderizarMiCuadre();
     }
 
-    function confirmarMiCuadre(id) {
+    let miCuadreConfirmandoId = null;
+
+    function abrirModalConfirmarMiCuadre(id) {
       if (!puedeConfirmarMiCuadre()) { alert('No tiene permiso para confirmar cuadres.'); return; }
       const cuadre = miCuadres.find(item => item.id === id);
-      const cuentaDestino = document.getElementById(`mi-destino-${id}`)?.value;
-      const cargarFaltante = document.getElementById(`mi-faltante-${id}`)?.checked;
+      if (!cuadre || cuadre.estado === 'Confirmado') return;
+      if (cuadre.diferencia < -0.01) {
+        // El "Cargar faltante" sigue disponible dentro del modal, solo avisamos aquí si aplica
+      }
+      miCuadreConfirmandoId = id;
+      const contenido = document.getElementById('mi-cuadre-confirmar-contenido');
+      const transferencias = (cuadre.transferencias || []).filter(t => t.monto > 0);
+      const filasTransferencias = transferencias.length
+        ? transferencias.map((t, idx) => `<label class="flex items-center justify-between gap-2 bg-slate-50 border rounded-lg px-3 py-2 text-xs"><span class="flex items-center gap-2"><input type="checkbox" id="mi-confirmar-trans-${idx}" checked class="rounded"> Acreditar $${t.monto.toFixed(2)} a <strong>${t.bancoReportado || 'cuenta no indicada'}</strong>${t.referencia ? ` (${t.referencia})` : ''}</span></label>`).join('')
+        : '<p class="text-xs text-slate-400 italic">Sin transferencias declaradas.</p>';
+      contenido.innerHTML = `
+        <div class="grid grid-cols-2 gap-3 text-sm bg-slate-50 rounded-xl p-3">
+          <div><span class="text-xs text-slate-500">Empleado</span><p class="font-bold">${cuadre.empleadoNombre}</p></div>
+          <div><span class="text-xs text-slate-500">Fecha</span><p class="font-bold">${cuadre.fecha}</p></div>
+          <div><span class="text-xs text-slate-500">Efectivo del desglose</span><p class="font-black text-indigo-700">$${cuadre.efectivoContado.toFixed(2)}</p></div>
+          <div><span class="text-xs text-slate-500">Diferencia</span><p class="font-black ${cuadre.diferencia < -0.01 ? 'text-rose-600' : 'text-emerald-600'}">${cuadre.diferencia < 0 ? '-' : ''}$${Math.abs(cuadre.diferencia).toFixed(2)}</p></div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-emerald-700 uppercase mb-1">Bóveda destino para el efectivo del desglose *</label>
+          <select id="mi-confirmar-destino" class="w-full px-3 py-2 border border-emerald-300 bg-emerald-50 rounded-xl text-xs font-semibold">${obtenerOpcionesDestinoMiCuadre(cuadre.cuentaDestino)}</select>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-slate-700 uppercase mb-1">Transferencias declaradas (permitir cada una por separado)</p>
+          <div class="space-y-1">${filasTransferencias}</div>
+        </div>
+        ${cuadre.diferencia < -0.01 ? `<label class="flex items-center gap-2 text-xs font-semibold text-rose-700"><input type="checkbox" id="mi-confirmar-faltante" class="rounded"> Cargar el faltante de $${Math.abs(cuadre.diferencia).toFixed(2)} como crédito del empleado</label>` : ''}
+      `;
+      document.getElementById('modal-confirmar-mi-cuadre').classList.remove('hidden');
+      document.getElementById('modal-confirmar-mi-cuadre').classList.add('flex');
+    }
+
+    function cerrarModalConfirmarMiCuadre() {
+      const modal = document.getElementById('modal-confirmar-mi-cuadre');
+      if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+      miCuadreConfirmandoId = null;
+    }
+
+    function confirmarMiCuadreDesdeModal() {
+      const id = miCuadreConfirmandoId;
+      const cuadre = miCuadres.find(item => item.id === id);
+      const cuentaDestino = document.getElementById('mi-confirmar-destino')?.value;
+      const cargarFaltante = document.getElementById('mi-confirmar-faltante')?.checked;
       if (!cuadre || cuadre.estado === 'Confirmado' || !cuentaDestino) { alert('Selecciona la cuenta o bóveda destino antes de confirmar.'); return; }
       if (cuadre.diferencia < -0.01 && !cargarFaltante) { alert('Este cuadre tiene un faltante. Marca "Cargar faltante" si deseas registrarlo como crédito del empleado.'); return; }
-      buscarYModificarSaldoCuenta(cuentaDestino, cuadre.efectivoContado + cuadre.totalTransferencias, true);
+
+      // Solo el efectivo del desglose entra a la bóveda seleccionada; los retiros ya se aplicaron al retirarlos
+      buscarYModificarSaldoCuenta(cuentaDestino, cuadre.efectivoContado, true);
+
+      // Cada transferencia se acredita a su propia cuenta declarada, solo si el admin la permitió (checkbox marcado)
+      const transferencias = (cuadre.transferencias || []).filter(t => t.monto > 0);
+      transferencias.forEach((transferencia, idx) => {
+        const permitido = document.getElementById(`mi-confirmar-trans-${idx}`)?.checked;
+        if (permitido && transferencia.cuentaReportada) {
+          buscarYModificarSaldoCuenta(transferencia.cuentaReportada, transferencia.monto, true);
+        }
+      });
+
       if (cuadre.diferencia < -0.01 && cargarFaltante) {
         const credito = { id: Date.now(), empleadoId: cuadre.empleadoId, empleadoNombre: cuadre.empleadoNombre, tipo: 'Faltante de Mi cuadre', montoTotal: Math.abs(cuadre.diferencia), cuota: Math.abs(cuadre.diferencia), pendiente: Math.abs(cuadre.diferencia), fecha: cuadre.fecha, desc: `Faltante de cuadre del ${cuadre.fecha}`, estado: 'Activo', cuadreId: cuadre.id };
         creditosEmpleados.unshift(credito); cuadre.creditoEmpleadoIds = [credito.id]; localStorage.setItem('mis_creditos_empleados_bd', JSON.stringify(creditosEmpleados));
       }
       cuadre.estado = 'Confirmado'; cuadre.cuentaDestino = cuentaDestino; cuadre.nombreCuentaDestino = obtenerNombreCuenta(cuentaDestino); cuadre.confirmadoPor = usuarioLogueado.nombre; cuadre.confirmadoEn = new Date().toISOString();
-      localStorage.setItem('mis_mi_cuadre_bd', JSON.stringify(miCuadres)); renderizarMiCuadre(); actualizarSelectsCuentasYBovedas();
+      localStorage.setItem('mis_mi_cuadre_bd', JSON.stringify(miCuadres));
+      cerrarModalConfirmarMiCuadre();
+      renderizarMiCuadre();
+      actualizarSelectsCuentasYBovedas();
     }
 
     // --- CUADRE DE CAJERA ---
@@ -5430,6 +5912,7 @@ function guardarPermisosEmpleado() {
       document.getElementById('desglose-lbl-total-ingresado').textContent = '$0.00';
       document.getElementById('desglose-lbl-diferencia-alerta').textContent = '';
       document.getElementById('desglose-lbl-diferencia-alerta').className = 'text-center font-bold pt-0.5 text-xs';
+      document.getElementById('desglose-resumen-totales')?.classList.remove('hidden');
 
       const modal = document.getElementById('modal-desglose-efectivo');
       modal.dataset.contexto = 'pagoCxP';
@@ -5626,6 +6109,7 @@ function guardarPermisosEmpleado() {
       document.getElementById('desglose-lbl-total-ingresado').textContent = '$0.00';
       document.getElementById('desglose-lbl-diferencia-alerta').textContent = '';
       document.getElementById('desglose-lbl-diferencia-alerta').className = 'text-center font-bold pt-0.5 text-xs';
+      document.getElementById('desglose-resumen-totales')?.classList.remove('hidden');
 
       const modal = document.getElementById('modal-desglose-efectivo');
       modal.dataset.contexto = 'compra';
@@ -5752,6 +6236,16 @@ function guardarPermisosEmpleado() {
       cerrarModalDesgloseLote();
 
       imprimirTicketCompraDirecto(nuevaCompra.id);
+    }
+
+    function toggleHistorialCompras() {
+      const contenedor = document.getElementById('contenedor-historial-compras');
+      const btn = document.getElementById('btn-toggle-historial-compras');
+      if (!contenedor || !btn) return;
+      const seVaAMostrar = contenedor.classList.contains('hidden');
+      contenedor.classList.toggle('hidden');
+      btn.innerHTML = seVaAMostrar ? '<i class="fa-solid fa-eye-slash mr-1"></i> Ocultar Historial' : '<i class="fa-solid fa-eye mr-1"></i> Ver Historial';
+      if (seVaAMostrar) renderizarCompras();
     }
 
     function renderizarCompras() {
@@ -6468,6 +6962,8 @@ function imprimirTicketTransferenciaDirecto(t) {
 
       pedidosFiltrados.forEach(p => {
         let numFactura = p.numeroFactura || ('FAC-' + String(p.id).slice(-4));
+        const puedeEditarPedido = tienePermiso('editar_pedidos');
+        const puedeEliminarPedido = tienePermiso('eliminar_pedidos');
         tbody.innerHTML += `
           <tr>
             <td class="py-3 px-4 text-center"><input type="checkbox" class="chk-pedido-item rounded" value="${p.id}"></td>
@@ -6476,8 +6972,9 @@ function imprimirTicketTransferenciaDirecto(t) {
             <td class="py-3 px-4 font-semibold text-indigo-900">${p.delivery}</td>
             <td class="py-3 px-4 font-black text-emerald-600">$${p.monto.toFixed(2)}</td>
             <td class="py-3 px-4 text-center space-x-2">
-              <button onclick="abrirModalEditarPedido(${p.id})" class="text-indigo-600 p-1 hover:bg-indigo-50 rounded-lg" title="Modificar Pedido"><i class="fa-solid fa-pen-to-square"></i></button>
-              <button onclick="eliminarPedidoActivo(${p.id})" class="text-rose-500 p-1 hover:bg-rose-50 rounded-lg" title="Eliminar Pedido"><i class="fa-solid fa-trash"></i></button>
+              ${puedeEditarPedido ? `<button onclick="abrirModalEditarPedido(${p.id})" class="text-indigo-600 p-1 hover:bg-indigo-50 rounded-lg" title="Modificar Pedido"><i class="fa-solid fa-pen-to-square"></i></button>` : ''}
+              ${puedeEliminarPedido ? `<button onclick="eliminarPedidoActivo(${p.id})" class="text-rose-500 p-1 hover:bg-rose-50 rounded-lg" title="Eliminar Pedido"><i class="fa-solid fa-trash"></i></button>` : ''}
+              ${!puedeEditarPedido && !puedeEliminarPedido ? '<span class="text-[10px] text-slate-400 italic">Sin permiso</span>' : ''}
             </td>
           </tr>
         `;
@@ -6517,7 +7014,7 @@ function imprimirTicketTransferenciaDirecto(t) {
   if (tienePermiso('editar_pedidos')) {
     abrir();
   } else {
-    verificarPermisoAdmin('Editar pedido activo', abrir);
+    verificarPermisoPedidosActivos('Editar pedido activo', abrir);
   }
 }
     function cerrarModalEditarPedido() {
@@ -6575,7 +7072,7 @@ function imprimirTicketTransferenciaDirecto(t) {
   if (tienePermiso('eliminar_pedidos')) {
     eliminar();
   } else {
-    verificarPermisoAdmin('Eliminar pedido activo', eliminar);
+    verificarPermisoPedidosActivos('Eliminar pedido activo', eliminar);
   }
 }
 
@@ -6602,7 +7099,9 @@ function imprimirTicketTransferenciaDirecto(t) {
       });
 
       document.getElementById('desglose-lbl-total-requerido').innerText = `$${montoTotalRequeridoCuadre.toFixed(2)}`;
-      
+      // Oculta el total requerido y el faltante para que el usuario no ajuste el desglose a propósito para evadirlo
+      document.getElementById('desglose-resumen-totales')?.classList.toggle('hidden', !tienePermiso('ver_total_cuadre'));
+
       ordenDenominaciones.forEach(idDen => {
         const inputEl = document.getElementById(idDen);
         if (inputEl) inputEl.value = '';
@@ -6684,13 +7183,19 @@ function imprimirTicketTransferenciaDirecto(t) {
 
       const totalIngresado = calcularTotalDesglose();
       const diferencia = totalIngresado - montoTotalRequeridoCuadre;
+      const toleranciaFaltante = toleranciasCuadre.faltante || 0;
+      const toleranciaSobrante = toleranciasCuadre.sobrante || 0;
+      const excedeTolerancia = (diferencia < 0 && Math.abs(diferencia) > toleranciaFaltante) || (diferencia > 0 && diferencia > toleranciaSobrante);
 
-      if (diferencia < 0 && Math.abs(diferencia) > (toleranciasCuadre.faltante || 0)) {
-        if (!confirm(`⚠️ ALERTA: Hay un faltante de -$${Math.abs(diferencia).toFixed(2)}, el cual supera la tolerancia permitida ($${(toleranciasCuadre.faltante||0).toFixed(2)}).\n¿Desea autorizar y procesar de todos modos?`)) {
-          return;
-        }
+      if (excedeTolerancia) {
+        abrirModalAlertaDiferenciaDesglose(diferencia);
+        return;
       }
 
+      finalizarProcesoDesglose(totalIngresado, diferencia);
+    }
+
+    function finalizarProcesoDesglose(totalIngresado, diferencia, motivo) {
       let pedidosProcesados = [];
       pedidosActivos = pedidosActivos.filter(p => {
         if (idsPedidosSeleccionadosCuadre.includes(p.id)) {
@@ -6706,7 +7211,8 @@ function imprimirTicketTransferenciaDirecto(t) {
         pedidos: pedidosProcesados,
         totalFactura: montoTotalRequeridoCuadre,
         totalDesglosado: totalIngresado,
-        diferencia
+        diferencia,
+        motivoDiferencia: motivo || ''
       };
 
       desglosesHistorial.unshift(nuevoDesgloseHist);
@@ -6717,6 +7223,75 @@ function imprimirTicketTransferenciaDirecto(t) {
       renderizarPedidosActivos();
       renderizarDesglosesHistorial();
       alert('✅ Cuadre y retorno procesado exitosamente.');
+    }
+
+    // No tiene botón de cerrar ni se cierra al hacer clic afuera: solo la clave correcta desbloquea las acciones
+    function abrirModalAlertaDiferenciaDesglose(diferencia) {
+      const tipo = diferencia < 0 ? 'Faltante' : 'Sobrante';
+      const monto = Math.abs(diferencia).toFixed(2);
+      document.getElementById('alerta-desglose-mensaje').textContent = `Hay un ${tipo.toLowerCase()} de $${monto} que supera la tolerancia permitida. No se puede continuar sin autorización.`;
+      const campoPin = document.getElementById('alerta-desglose-pin');
+      if (campoPin) campoPin.value = '';
+      document.getElementById('alerta-desglose-paso-pin').classList.remove('hidden');
+      document.getElementById('alerta-desglose-paso-acciones').classList.add('hidden');
+      document.getElementById('alerta-desglose-paso-motivo').classList.add('hidden');
+      const modalAlerta = document.getElementById('modal-alerta-diferencia-desglose');
+      modalAlerta.classList.remove('hidden');
+      modalAlerta.classList.add('flex');
+      setTimeout(() => campoPin?.focus(), 50);
+    }
+
+    function verificarPinAlertaDesglose() {
+      const valor = (document.getElementById('alerta-desglose-pin').value || '').trim();
+      const esAdmin = usuarioLogueado && (usuarioLogueado.id === 'admin' || usuarioLogueado.cargo === 'Administrador');
+      const esValido = esAdmin || valor === adminPin || (pedidosActivosPin && valor === pedidosActivosPin);
+      if (esValido) {
+        document.getElementById('alerta-desglose-paso-pin').classList.add('hidden');
+        document.getElementById('alerta-desglose-paso-acciones').classList.remove('hidden');
+      } else {
+        alert('❌ Clave incorrecta. Permiso denegado.');
+      }
+    }
+
+    function elegirAccionAlertaDesglose(accion) {
+      accionPendienteAlertaDesglose = accion;
+      document.getElementById('alerta-desglose-paso-acciones').classList.add('hidden');
+      const tituloMotivo = document.getElementById('alerta-desglose-motivo-titulo');
+      if (tituloMotivo) tituloMotivo.textContent = accion === 'editar' ? 'Escriba el motivo por el que va a editar el desglose *' : 'Escriba el motivo del faltante o sobrante *';
+      const campoMotivo = document.getElementById('alerta-desglose-motivo');
+      if (campoMotivo) campoMotivo.value = '';
+      document.getElementById('alerta-desglose-paso-motivo').classList.remove('hidden');
+      setTimeout(() => campoMotivo?.focus(), 50);
+    }
+
+    function confirmarMotivoAlertaDesglose() {
+      const motivo = (document.getElementById('alerta-desglose-motivo').value || '').trim();
+      if (!motivo) { alert('Debe escribir el motivo para continuar.'); return; }
+
+      const diferenciaActual = calcularTotalDesgloseNumero() - montoTotalRequeridoCuadre;
+      bitacoraDiferenciasDesglose.unshift({
+        id: Date.now(),
+        fechaHora: new Date().toLocaleString(),
+        accion: accionPendienteAlertaDesglose,
+        diferencia: diferenciaActual,
+        motivo,
+        autorizadoPor: usuarioLogueado?.nombre || 'Admin'
+      });
+      localStorage.setItem('mis_bitacora_diferencias_desglose', JSON.stringify(bitacoraDiferenciasDesglose));
+
+      const modalAlerta = document.getElementById('modal-alerta-diferencia-desglose');
+      modalAlerta.classList.add('hidden');
+      modalAlerta.classList.remove('flex');
+
+      if (accionPendienteAlertaDesglose === 'editar') {
+        accionPendienteAlertaDesglose = null;
+        return;
+      }
+
+      const totalIngresado = calcularTotalDesgloseNumero();
+      const diferencia = totalIngresado - montoTotalRequeridoCuadre;
+      finalizarProcesoDesglose(totalIngresado, diferencia, motivo);
+      accionPendienteAlertaDesglose = null;
     }
 
     function renderizarDesglosesHistorial() {
@@ -6742,7 +7317,7 @@ function imprimirTicketTransferenciaDirecto(t) {
             <td class="py-3 px-4 text-xs font-medium text-slate-800">${clientesStr}</td>
             <td class="py-3 px-4 font-bold">$${d.totalFactura.toFixed(2)}</td>
             <td class="py-3 px-4 font-bold text-indigo-700">$${d.totalDesglosado.toFixed(2)}</td>
-            <td class="py-3 px-4 font-black ${difColor}">${difTxt}</td>
+            <td class="py-3 px-4 font-black ${difColor}">${difTxt}${d.motivoDiferencia ? `<br><span class="text-[10px] font-normal text-slate-500 italic">${d.motivoDiferencia}</span>` : ''}</td>
             <td class="py-3 px-4 text-center">
               <button onclick="eliminarDesgloseHistorial(${d.id})" class="text-rose-500 p-1" title="Eliminar Registro"><i class="fa-solid fa-trash"></i></button>
             </td>
@@ -6965,6 +7540,29 @@ function imprimirTicketTransferenciaDirecto(t) {
       fijarFechasPorDefecto();
       if(document.getElementById('emp-fecha-cumple')) document.getElementById('emp-fecha-cumple').value = '1995-01-01';
 
+      // Evita que Enter en un campo dispare el submit del formulario (cobros/impresiones accidentales),
+      // salvo que sea el último campo del formulario (ej. el PIN de inicio de sesión), que sí debe enviar con Enter
+      document.addEventListener('keydown', function(evento) {
+        if (evento.key !== 'Enter') return;
+        const objetivo = evento.target;
+        if (!objetivo || !objetivo.tagName) return;
+        const etiqueta = objetivo.tagName;
+        if (etiqueta === 'TEXTAREA' || etiqueta === 'BUTTON') return;
+        if (etiqueta === 'INPUT') {
+          const tipo = (objetivo.type || '').toLowerCase();
+          if (tipo === 'submit' || tipo === 'button' || tipo === 'checkbox' || tipo === 'radio') return;
+        }
+        if (!objetivo.form) return;
+        const enfocables = Array.from(objetivo.form.querySelectorAll('input, select, textarea'))
+          .filter(el => !el.disabled && !el.readOnly && el.offsetParent !== null);
+        const indice = enfocables.indexOf(objetivo);
+        if (indice > -1 && indice < enfocables.length - 1) {
+          evento.preventDefault();
+          enfocables[indice + 1].focus();
+        }
+        // Si es el último campo, se deja el comportamiento normal (envía el formulario con Enter)
+      });
+
       if(document.getElementById('rep-filtro-desde') && document.getElementById('rep-filtro-hasta')) {
         let mesPasado = new Date();
         mesPasado.setMonth(mesPasado.getMonth() - 1);
@@ -6974,7 +7572,7 @@ function imprimirTicketTransferenciaDirecto(t) {
 
       ocultarTodasLasSeccionesPorSeguridad();
       verificarEstadoSesion();
-      if (usuarioLogueado) cambiarSeccion('dashboard');
+      if (usuarioLogueado) irASeccionPermitidaPorDefecto();
       renderizarGastos();
       renderizarVentasEntradas();
       renderizarCompras();

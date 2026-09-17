@@ -1804,23 +1804,32 @@
     let temporizadorSincronizacion = null;
     const cambiosPendientesNube = new Map();
 
-    function mostrarEstadoSincronizacion(texto, esError = false) {
+    function mostrarEstadoSincronizacion(texto, esError = false, permitirReintento = false) {
       let aviso = document.getElementById('estado-sincronizacion-nube');
       if (!aviso) {
         aviso = document.createElement('div');
         aviso.id = 'estado-sincronizacion-nube';
-        aviso.className = 'fixed bottom-4 right-4 z-[100] px-4 py-2 rounded-xl shadow-lg text-xs font-bold text-white';
+        aviso.className = 'fixed bottom-4 right-4 z-[100] max-w-sm px-4 py-3 rounded-xl shadow-lg text-xs font-bold text-white';
         document.body.appendChild(aviso);
       }
       aviso.classList.toggle('bg-rose-600', esError);
       aviso.classList.toggle('bg-emerald-600', !esError);
-      aviso.textContent = texto;
+      aviso.innerHTML = `<span>${texto}</span>`;
+      if (permitirReintento) {
+        const boton = document.createElement('button');
+        boton.type = 'button';
+        boton.className = 'block mt-2 underline underline-offset-2';
+        boton.textContent = 'Reintentar conexión';
+        boton.onclick = () => iniciarSincronizacionSupabase();
+        aviso.appendChild(boton);
+      }
       clearTimeout(aviso._ocultarTimer);
-      aviso._ocultarTimer = setTimeout(() => aviso.remove(), esError ? 8000 : 2500);
+      aviso._ocultarTimer = setTimeout(() => aviso.remove(), esError ? 30000 : 2500);
     }
 
     async function enviarCambiosPendientes() {
-      if (!clienteSupabase || cambiosPendientesNube.size === 0) return;
+      if (!clienteSupabase) return false;
+      if (cambiosPendientesNube.size === 0) return true;
       const filas = Array.from(cambiosPendientesNube, ([clave, valor]) => ({
         clave,
         valor,
@@ -1832,9 +1841,10 @@
         filas.forEach(fila => cambiosPendientesNube.set(fila.clave, fila.valor));
         mostrarEstadoSincronizacion('Sin conexión con Supabase. Los datos siguen guardados en esta computadora.', true);
         console.error('Error al sincronizar con Supabase:', error);
-        return;
+        return false;
       }
       mostrarEstadoSincronizacion('Datos sincronizados');
+      return true;
     }
 
     function programarSincronizacion(clave, valor) {
@@ -1890,9 +1900,9 @@
 
       if (error) {
         const mensaje = error.code === 'PGRST205'
-          ? 'Supabase está configurado, pero falta la tabla estado_aplicacion. Ejecuta supabase-setup.sql.'
-          : 'No se pudo conectar con Supabase. Revisa la tabla y sus permisos.';
-        mostrarEstadoSincronizacion(mensaje, true);
+          ? 'Falta la tabla estado_aplicacion en Supabase. Ejecuta supabase-setup.sql en el SQL Editor.'
+          : `No se pudo conectar con Supabase (${error.code || 'sin código'}). Revisa la tabla y sus permisos.`;
+        mostrarEstadoSincronizacion(mensaje, true, true);
         console.error('Error al cargar datos de Supabase:', error);
         return false;
       }
@@ -1904,7 +1914,8 @@
           if (valor !== null) cambiosPendientesNube.set(clave, valor);
         });
         sincronizacionLista = true;
-        await enviarCambiosPendientes();
+        const subidaInicialCorrecta = await enviarCambiosPendientes();
+        if (!subidaInicialCorrecta) return false;
       } else {
         data.forEach(fila => {
           if (!CLAVES_SINCRONIZADAS.includes(fila.clave)) return;

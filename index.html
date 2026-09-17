@@ -1875,7 +1875,12 @@
 
     async function iniciarSincronizacionSupabase() {
       if (!clienteSupabase) {
-        mostrarEstadoSincronizacion('Supabase no está configurado. Se usará almacenamiento local.', true);
+        const detalle = !window.supabase
+          ? 'No se cargó el cliente de Supabase.'
+          : !configuracionSupabase.url || !configuracionSupabase.publishableKey
+            ? 'Falta la URL o la clave pública.'
+            : 'La configuración no pudo inicializarse.';
+        mostrarEstadoSincronizacion(`${detalle} Se usará almacenamiento local.`, true);
         return false;
       }
 
@@ -1884,7 +1889,10 @@
         .select('clave, valor');
 
       if (error) {
-        mostrarEstadoSincronizacion('No se pudo conectar con Supabase. Revisa la tabla y sus permisos.', true);
+        const mensaje = error.code === 'PGRST205'
+          ? 'Supabase está configurado, pero falta la tabla estado_aplicacion. Ejecuta supabase-setup.sql.'
+          : 'No se pudo conectar con Supabase. Revisa la tabla y sus permisos.';
+        mostrarEstadoSincronizacion(mensaje, true);
         console.error('Error al cargar datos de Supabase:', error);
         return false;
       }

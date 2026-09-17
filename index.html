@@ -460,6 +460,12 @@
                 <input type="hidden" id="mi-cuadre-retiro-total" value="0">
                 <p id="mi-cuadre-retiro-detalle" class="text-[10px] text-slate-500 mt-1">Sin retiros registrados para esta fecha.</p>
               </div>
+              <div class="mt-3 pt-3 border-t border-dashed border-slate-300">
+                <label class="block text-xs font-bold text-amber-700 uppercase mb-1">Gastos y salidas de la cajera</label>
+                <input type="text" id="mi-cuadre-gastos-monto" readonly disabled value="$0.00" class="w-full px-3 py-2 border border-amber-200 bg-amber-50 rounded-lg text-sm font-bold text-amber-700 cursor-not-allowed">
+                <input type="hidden" id="mi-cuadre-gastos-total" value="0">
+                <p id="mi-cuadre-gastos-detalle" class="text-[10px] text-slate-500 mt-1">Sin gastos registrados para esta fecha.</p>
+              </div>
             </div>
             <div id="mi-cuadre-resumen-panel" class="grid grid-cols-1 gap-4 bg-indigo-50 border border-indigo-200 rounded-xl p-4 text-base self-stretch content-center">
               <div><p class="text-xs text-slate-500 font-semibold">Efectivo esperado</p><strong id="mi-cuadre-resumen-esperado" class="text-2xl font-black text-indigo-700">$0.00</strong></div>
@@ -647,6 +653,9 @@
             </select>
             <!-- Buscador Inteligente Multifactura / Texto -->
             <input type="text" id="buscador-pedidos-activos" oninput="renderizarPedidosActivos()" placeholder="🔍 Facturas (ej: 2416, 2414, 2430) o cliente..." class="px-3 py-2 border rounded-xl text-xs w-full sm:w-72 outline-none focus:border-indigo-500">
+            <button type="button" onclick="abrirHistorialDesglosesDesdePedidos()" class="bg-slate-700 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow flex items-center gap-2 flex-shrink-0 w-full sm:w-auto justify-center">
+              <i class="fa-solid fa-clock-rotate-left"></i> Historial de Desgloses
+            </button>
             <button type="button" onclick="abrirModalDesgloseLote()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow flex items-center gap-2 flex-shrink-0 w-full sm:w-auto justify-center">
               <i class="fa-solid fa-cash-register"></i> Procesar Retorno
             </button>
@@ -1340,6 +1349,7 @@
               <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-panel-cuadre-cajera" class="rounded"> Cuadre Cajera</label>
               <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-panel-mi-cuadre" class="rounded"> Mi cuadre</label>
               <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-panel-retiro-caja" class="rounded"> Retiro de Caja</label>
+              <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-panel-gestor-pedidos" class="rounded"> Pedidos Activos y Retorno</label>
               <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-panel-delivery" class="rounded"> Delivery y Comisiones</label>
               <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-panel-pedidos-editados" class="rounded"> Pedidos Editados (Auditoría)</label>
               <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-panel-registro-empleado" class="rounded"> Registro de Empleados</label>
@@ -1352,14 +1362,17 @@
               <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-panel-parametros" class="rounded"> Parámetros del Sistema</label>
             </div>
             <hr class="my-1">
-            <p class="text-xs font-bold text-slate-700 uppercase">Permisos Específicos Sub-paneles Gestor de Pedidos (controlan también el acceso al módulo):</p>
-            <div class="grid grid-cols-1 sm:grid-cols-1 gap-2 text-xs">
-              <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-subpanel-nuevo-pedido" class="rounded"> Ver / Usar "Registrar Nuevo Pedido para la Calle"</label>
-              <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-subpanel-pedidos-activos" class="rounded"> Ver / Usar "Pedidos Activos en Ruta y Retorno"</label>
-              <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="chk-subpanel-historial-desgloses" class="rounded"> Ver / Usar "Historial de Desgloses y Cuadres de Delivery"</label>
-            </div>
-            <hr class="my-1">
             <p class="text-xs font-bold text-slate-700 uppercase">Permisos Especiales:</p>
+            <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+              <input type="checkbox" id="chk-subpanel-nuevo-pedido" class="rounded"> Permitir crear pedido / gestor de pedido y entrega
+            </label>
+            <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+              <input type="checkbox" id="chk-subpanel-pedidos-activos" class="rounded"> Permitir ver pedidos activos en ruta y retorno
+            </label>
+            <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+              <input type="checkbox" id="chk-subpanel-historial-desgloses" class="rounded"> Permitir ver historial de desgloses y cuadres de delivery
+            </label>
+            <hr class="my-1">
             <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
               <input type="checkbox" id="chk-perm-ver-saldos" class="rounded"> Permitir ver saldos totales en Bóvedas y Bancos (Informes / Dashboard)
             </label>
@@ -1772,7 +1785,9 @@
       'ventas-entradas', 'ganancias', 'parametros', 'gestor-pedidos', 'delivery', 'pedidos-editados'
     ];
 
-    let usuarioLogueado = JSON.parse(localStorage.getItem('sesion_activa')) || null;
+    localStorage.removeItem('sesion_activa');
+    sessionStorage.removeItem('sesion_activa');
+    let usuarioLogueado = null;
     let adminPin = localStorage.getItem('mis_admin_pin') || '1234';
     let retiroCajaPin = localStorage.getItem('mis_retiro_caja_pin') || '';
     let pedidosActivosPin = localStorage.getItem('mis_pedidos_activos_pin') || '';
@@ -2297,12 +2312,12 @@
 
     function tieneAccesoPanel(seccionKey) {
       if (!usuarioLogueado || usuarioLogueado.id === 'admin' || usuarioLogueado.cargo === 'Administrador') return true;
-      // El acceso a Gestor de Pedidos depende solo de los 3 permisos específicos, no de un permiso general aparte
+      const p = permisosEmpleados[usuarioLogueado.id];
       if (seccionKey === 'gestor-pedidos') {
-        const subpaneles = permisosEmpleados[usuarioLogueado.id]?.subpaneles || {};
+        if (p?.paneles && p.paneles['gestor-pedidos'] === false) return false;
+        const subpaneles = p?.subpaneles || {};
         return subpaneles.nuevo_pedido === true || subpaneles.pedidos_activos === true || subpaneles.historial_desgloses === true;
       }
-      const p = permisosEmpleados[usuarioLogueado.id];
       if (!p || !p.paneles) return true;
       return p.paneles[seccionKey] !== false;
     }
@@ -2384,6 +2399,10 @@
       });
     }
 
+    function esUsuarioActivoCajeraAsignada() {
+      return usuarioLogueado && usuarioLogueado.id !== 'admin' && usuarioLogueado.cargo !== 'Administrador' && cajerasAsignadas.some(id => String(id) === String(usuarioLogueado.id));
+    }
+
     function aplicarRestriccionesUsuarioActivo() {
       const selectOrigen = document.getElementById('gasto-cuenta-origen');
       if (!selectOrigen) return;
@@ -2397,6 +2416,10 @@
       if (p) {
         if (p.bovedaDefecto) {
           selectOrigen.value = p.bovedaDefecto;
+        }
+        if (esUsuarioActivoCajeraAsignada() && p.bovedaDefecto) {
+          selectOrigen.disabled = true;
+          return;
         }
         if (!p.cambiar_cuenta_gasto) {
           selectOrigen.disabled = true;
@@ -2464,7 +2487,6 @@
       if (userVal === 'admin') {
         if (pinVal === adminPin) {
           usuarioLogueado = { id: 'admin', nombre: 'Administrador Principal', cargo: 'Acceso Total' };
-          localStorage.setItem('sesion_activa', JSON.stringify(usuarioLogueado));
           document.getElementById('login-pin').value = '';
           verificarEstadoSesion();
           irASeccionPermitidaPorDefecto();
@@ -2474,7 +2496,6 @@
         const emp = empleados.find(e => e.id === empId);
         if (emp && emp.pin === pinVal) {
           usuarioLogueado = { id: emp.id, nombre: emp.nombre, cargo: emp.cargo };
-          localStorage.setItem('sesion_activa', JSON.stringify(usuarioLogueado));
           document.getElementById('login-pin').value = '';
           verificarEstadoSesion();
           irASeccionPermitidaPorDefecto();
@@ -2503,6 +2524,7 @@
       if (confirm('¿Desea cerrar sesión?')) {
         usuarioLogueado = null;
         localStorage.removeItem('sesion_activa');
+        sessionStorage.removeItem('sesion_activa');
         ocultarTodasLasSeccionesPorSeguridad();
         verificarEstadoSesion();
       }
@@ -2654,17 +2676,39 @@
       const p3 = document.getElementById('subpanel-historial-desgloses');
 
       if (!usuarioLogueado || usuarioLogueado.id === 'admin' || usuarioLogueado.cargo === 'Administrador') {
-        if (p1) p1.classList.remove('hidden');
-        if (p2) p2.classList.remove('hidden');
-        if (p3) p3.classList.remove('hidden');
+        [p1, p2, p3].forEach(panel => {
+          if (panel) {
+            panel.classList.remove('hidden');
+            panel.style.display = '';
+          }
+        });
         return;
       }
 
-      // Sin permiso explícito, el módulo queda oculto (denegado por defecto)
       const subpaneles = permisosEmpleados[usuarioLogueado.id]?.subpaneles || {};
-      if (p1) p1.classList.toggle('hidden', subpaneles.nuevo_pedido !== true);
-      if (p2) p2.classList.toggle('hidden', subpaneles.pedidos_activos !== true);
-      if (p3) p3.classList.toggle('hidden', subpaneles.historial_desgloses !== true);
+      const aplicar = (elemento, visible) => {
+        if (!elemento) return;
+        elemento.classList.toggle('hidden', !visible);
+        elemento.style.display = visible ? '' : 'none';
+      };
+      aplicar(p1, subpaneles.nuevo_pedido === true);
+      aplicar(p2, subpaneles.pedidos_activos === true);
+      aplicar(p3, subpaneles.historial_desgloses === true);
+    }
+
+    function abrirHistorialDesglosesDesdePedidos() {
+      const puedeVerHistorial = !usuarioLogueado || usuarioLogueado.id === 'admin' || usuarioLogueado.cargo === 'Administrador' || permisosEmpleados[usuarioLogueado.id]?.subpaneles?.historial_desgloses === true;
+      if (!puedeVerHistorial) {
+        alert('No tiene permiso para ver el historial de desgloses y cuadres de delivery.');
+        return;
+      }
+
+      const historial = document.getElementById('subpanel-historial-desgloses');
+      if (!historial) return;
+      renderizarDesglosesHistorial();
+      historial.classList.remove('hidden');
+      historial.style.display = '';
+      historial.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     // --- DASHBOARD ---
@@ -3163,7 +3207,7 @@
     // --- COPIA DE SEGURIDAD ---
     function exportarBaseDeDatos() {
       const datosBackup = {
-        sesion_activa: localStorage.getItem('sesion_activa'),
+        sesion_activa: null,
         mis_admin_pin: localStorage.getItem('mis_admin_pin'),
         mis_tipos_gasto: localStorage.getItem('mis_tipos_gasto'),
         mis_gastos_v2: localStorage.getItem('mis_gastos_v2'),
@@ -4341,6 +4385,7 @@ function cargarPermisosEmpleadoSeleccionado() {
     'chk-panel-ganancias',
     'chk-panel-cuadre-cajera',
     'chk-panel-retiro-caja',
+    'chk-panel-gestor-pedidos',
     'chk-panel-delivery',
     'chk-panel-pedidos-editados',
     'chk-panel-registro-empleado',
@@ -4408,6 +4453,7 @@ function cargarPermisosEmpleadoSeleccionado() {
     'chk-panel-cuadre-cajera': 'cuadre-cajera',
     'chk-panel-mi-cuadre': 'mi-cuadre',
     'chk-panel-retiro-caja': 'retiro-caja',
+    'chk-panel-gestor-pedidos': 'gestor-pedidos',
     'chk-panel-delivery': 'delivery',
     'chk-panel-pedidos-editados': 'pedidos-editados',
     'chk-panel-registro-empleado': 'registro-empleado',
@@ -4453,6 +4499,7 @@ function guardarPermisosEmpleado() {
       'cuadre-cajera': document.getElementById('chk-panel-cuadre-cajera').checked,
       'mi-cuadre': document.getElementById('chk-panel-mi-cuadre').checked,
       'retiro-caja': document.getElementById('chk-panel-retiro-caja').checked,
+      'gestor-pedidos': document.getElementById('chk-panel-gestor-pedidos').checked,
       delivery: document.getElementById('chk-panel-delivery').checked,
       'pedidos-editados': document.getElementById('chk-panel-pedidos-editados').checked,
       'registro-empleado': document.getElementById('chk-panel-registro-empleado').checked,
@@ -4582,6 +4629,22 @@ function guardarPermisosEmpleado() {
       }
     }
 
+    function guardarToleranciasCuadre(e) {
+      e.preventDefault();
+      const faltante = parseFloat(document.getElementById('param-tolerancia-faltante').value || '0');
+      const sobrante = parseFloat(document.getElementById('param-tolerancia-sobrante').value || '0');
+
+      if (isNaN(faltante) || isNaN(sobrante) || faltante < 0 || sobrante < 0) {
+        alert('❌ Las tolerancias deben ser montos válidos de 0 en adelante.');
+        return;
+      }
+
+      toleranciasCuadre = { faltante, sobrante };
+      localStorage.setItem('mis_tolerancias_cuadre', JSON.stringify(toleranciasCuadre));
+      cargarParametrosEnPantalla();
+      alert('✅ Tolerancias guardadas correctamente.');
+    }
+
     function agregarBancoNegocio(e) {
       e.preventDefault();
       const nombre = document.getElementById('banco-nombre').value.trim();
@@ -4694,7 +4757,17 @@ function guardarPermisosEmpleado() {
       const desc = document.getElementById('desc').value.trim();
       const monto = parseFloat(document.getElementById('monto').value);
       const tipoGasto = document.getElementById('tipo-gasto').value;
-      const cuentaOrigen = document.getElementById('gasto-cuenta-origen').value;
+      let cuentaOrigen = document.getElementById('gasto-cuenta-origen').value;
+      const esUsuarioCajera = esUsuarioActivoCajeraAsignada();
+      const bovedaAsignadaUsuario = esUsuarioCajera ? permisosEmpleados[usuarioLogueado.id]?.bovedaDefecto : '';
+
+      if (esUsuarioCajera) {
+        if (!bovedaAsignadaUsuario) {
+          alert('❌ Tu usuario de cajera no tiene una caja o bóveda asignada. Pide al administrador configurarla en Parámetros > Asignación de Permisos.');
+          return;
+        }
+        cuentaOrigen = bovedaAsignadaUsuario;
+      }
 
       if (!fecha || !desc || isNaN(monto) || monto <= 0 || !cuentaOrigen) {
         alert('❌ Completa todos los campos correctamente.');
@@ -4718,6 +4791,7 @@ function guardarPermisosEmpleado() {
 
       const correlativoGasto = 'GT-' + String(gastos.length + 1).padStart(3, '0');
       const nombreUsuarioActual = usuarioLogueado ? usuarioLogueado.nombre : 'Admin';
+      const aplicaMiCuadre = esUsuarioCajera && bovedaAsignadaUsuario && cuentaOrigen === bovedaAsignadaUsuario;
 
       const nuevoGastoObj = { 
         id: Date.now(), 
@@ -4729,7 +4803,11 @@ function guardarPermisosEmpleado() {
         monto, 
         tipoGasto, 
         cuentaOrigen, 
-        nombreOrigen: obtenerNombreCuenta(cuentaOrigen) 
+        nombreOrigen: obtenerNombreCuenta(cuentaOrigen),
+        empleadoId: aplicaMiCuadre ? usuarioLogueado.id : null,
+        empleadoNombre: aplicaMiCuadre ? usuarioLogueado.nombre : '',
+        aplicaMiCuadre,
+        miCuadreId: null
       };
 
       gastos.push(nuevoGastoObj);
@@ -4742,6 +4820,7 @@ function guardarPermisosEmpleado() {
       actualizarSelectsCuentasYBovedas();
       calcularEstadisticasDashboard();
       aplicarRestriccionesUsuarioActivo();
+      actualizarRetiroMiCuadre();
 
       imprimirTicketGastoDirecto(nuevoGastoObj);
     }
@@ -5067,6 +5146,10 @@ function guardarPermisosEmpleado() {
       const accionEditar = () => {
         const g = gastos.find(x => x.id === id);
         if (!g) return;
+        if (g.miCuadreId) {
+          alert('Este gasto ya fue aplicado en un Mi cuadre. Edite primero ese cuadre si necesita corregirlo.');
+          return;
+        }
         document.getElementById('edit-gasto-id').value = g.id;
         document.getElementById('edit-gasto-fecha').value = g.fecha;
         document.getElementById('edit-gasto-desc').value = g.desc;
@@ -5105,6 +5188,10 @@ function guardarPermisosEmpleado() {
 
       const g = gastos.find(x => x.id === id);
       if (!g) return;
+      if (g.miCuadreId) {
+        alert('Este gasto ya fue aplicado en un Mi cuadre. Edite primero ese cuadre si necesita corregirlo.');
+        return;
+      }
 
       if (g.cuentaOrigen) {
         buscarYModificarSaldoCuenta(g.cuentaOrigen, g.monto, true);
@@ -5144,8 +5231,12 @@ function guardarPermisosEmpleado() {
 
     function eliminarGasto(id) {
       verificarPermisoAdmin('Eliminar registro de gasto', function() {
+        const g = gastos.find(x => x.id === id);
+        if (g?.miCuadreId) {
+          alert('Este gasto ya fue aplicado en un Mi cuadre. Edite primero ese cuadre si necesita eliminarlo.');
+          return;
+        }
         if (confirm('¿Eliminar gasto y reabastecer fondos?')) {
-          const g = gastos.find(x => x.id === id);
           if (g && g.cuentaOrigen) buscarYModificarSaldoCuenta(g.cuentaOrigen, g.monto, true);
           gastos = gastos.filter(g => g.id !== id);
           localStorage.setItem('mis_gastos_v2', JSON.stringify(gastos));
@@ -5241,12 +5332,22 @@ function guardarPermisosEmpleado() {
       return pendientes.concat(yaVinculados);
     }
 
+    function obtenerGastosCajaPendientesMiCuadre(empleadoId, fecha) {
+      if (!empleadoId || !fecha) return [];
+      const pendientes = gastos.filter(g => String(g.empleadoId) === String(empleadoId) && g.fecha === fecha && g.aplicaMiCuadre === true && !g.miCuadreId);
+      const yaVinculados = miCuadreEnEdicionId ? gastos.filter(g => g.miCuadreId === miCuadreEnEdicionId) : [];
+      return pendientes.concat(yaVinculados);
+    }
+
     function actualizarRetiroMiCuadre() {
       const empleadoId = document.getElementById('mi-cuadre-empleado')?.value;
       const fecha = document.getElementById('mi-cuadre-fecha')?.value;
       const campoTotal = document.getElementById('mi-cuadre-retiro-total');
       const campoMostrar = document.getElementById('mi-cuadre-retiro-monto');
       const campoDetalle = document.getElementById('mi-cuadre-retiro-detalle');
+      const campoGastosTotal = document.getElementById('mi-cuadre-gastos-total');
+      const campoGastosMostrar = document.getElementById('mi-cuadre-gastos-monto');
+      const campoGastosDetalle = document.getElementById('mi-cuadre-gastos-detalle');
       if (!campoTotal) return;
       const retiros = obtenerRetirosPendientesMiCuadre(empleadoId, fecha);
       const total = retiros.reduce((acc, r) => acc + r.monto, 0);
@@ -5257,6 +5358,15 @@ function guardarPermisosEmpleado() {
           ? retiros.map(r => `Retiro de $${r.monto.toFixed(2)} — ${r.motivo || 'Sin motivo'} (autorizado por ${r.autorizadoPor || 'Admin'})`).join('<br>')
           : 'Sin retiros registrados para esta fecha.';
       }
+      const gastosCaja = obtenerGastosCajaPendientesMiCuadre(empleadoId, fecha);
+      const totalGastosCaja = gastosCaja.reduce((acc, g) => acc + g.monto, 0);
+      if (campoGastosTotal) campoGastosTotal.value = totalGastosCaja;
+      if (campoGastosMostrar) campoGastosMostrar.value = `$${totalGastosCaja.toFixed(2)}`;
+      if (campoGastosDetalle) {
+        campoGastosDetalle.innerHTML = gastosCaja.length
+          ? gastosCaja.map(g => `Gasto de $${g.monto.toFixed(2)} — ${g.desc || 'Sin descripción'} (${g.numeroGasto || 'sin No.'})`).join('<br>')
+          : 'Sin gastos registrados para esta fecha.';
+      }
       calcularMiCuadre();
     }
 
@@ -5265,7 +5375,8 @@ function guardarPermisosEmpleado() {
       const efectivo = obtenerDesgloseEfectivoMiCuadre().total || 0;
       const totalTransferencias = obtenerTransferenciasMiCuadre().reduce((total, transferencia) => total + transferencia.monto, 0);
       const retirosCajaTotal = parseFloat(document.getElementById('mi-cuadre-retiro-total')?.value || '0') || 0;
-      const esperado = ventas - totalTransferencias - retirosCajaTotal;
+      const gastosCajaTotal = parseFloat(document.getElementById('mi-cuadre-gastos-total')?.value || '0') || 0;
+      const esperado = ventas - totalTransferencias - retirosCajaTotal - gastosCajaTotal;
       const diferencia = efectivo - esperado;
       const esperadoEl = document.getElementById('mi-cuadre-resumen-esperado');
       const contadoEl = document.getElementById('mi-cuadre-resumen-contado');
@@ -5276,7 +5387,7 @@ function guardarPermisosEmpleado() {
         diferenciaEl.textContent = `${diferencia < 0 ? '-' : ''}$${Math.abs(diferencia).toFixed(2)}`;
         diferenciaEl.className = `text-2xl font-black ${Math.abs(diferencia) < 0.01 ? 'text-emerald-600' : (diferencia < 0 ? 'text-rose-600' : 'text-indigo-600')}`;
       }
-      return { ventas, efectivo, totalTransferencias, retirosCajaTotal, esperado, diferencia, desgloseEfectivo: obtenerDesgloseEfectivoMiCuadre() };
+      return { ventas, efectivo, totalTransferencias, retirosCajaTotal, gastosCajaTotal, esperado, diferencia, desgloseEfectivo: obtenerDesgloseEfectivoMiCuadre() };
     }
 
     function guardarMiCuadre(evento) {
@@ -5298,10 +5409,12 @@ function guardarPermisosEmpleado() {
       }
       const cuadreId = miCuadreEnEdicionId || Date.now();
       const retirosVinculados = obtenerRetirosPendientesMiCuadre(empleadoId, fecha);
+      const gastosVinculados = obtenerGastosCajaPendientesMiCuadre(empleadoId, fecha);
       const cuadre = {
         id: cuadreId, fecha, empleadoId, empleadoNombre: empleado.nombre, sucursalId, sucursalNombre: sucursal?.nombre || '',
         ventas: calculo.ventas, efectivoContado: calculo.efectivo, desgloseEfectivo: calculo.desgloseEfectivo, transferencias,
         totalTransferencias: calculo.totalTransferencias, retirosCajaTotal: calculo.retirosCajaTotal, retiroIds: retirosVinculados.map(r => r.id),
+        gastosCajaTotal: calculo.gastosCajaTotal, gastoIds: gastosVinculados.map(g => g.id),
         efectivoEsperado: calculo.esperado, diferencia: calculo.diferencia,
         observacion: document.getElementById('mi-cuadre-observacion').value.trim(), estado: 'Pendiente',
         cuentaDestino: '', nombreCuentaDestino: '', creadoPor: usuarioLogueado?.nombre || 'Usuario', confirmadoPor: '', creditoEmpleadoIds: []
@@ -5309,6 +5422,9 @@ function guardarPermisosEmpleado() {
       retirosCaja.forEach(r => { if (r.miCuadreId === cuadreId) r.miCuadreId = null; });
       retirosVinculados.forEach(r => { const original = retirosCaja.find(x => x.id === r.id); if (original) original.miCuadreId = cuadreId; });
       localStorage.setItem('mis_retiros_caja_bd', JSON.stringify(retirosCaja));
+      gastos.forEach(g => { if (g.miCuadreId === cuadreId) g.miCuadreId = null; });
+      gastosVinculados.forEach(g => { const original = gastos.find(x => x.id === g.id); if (original) original.miCuadreId = cuadreId; });
+      localStorage.setItem('mis_gastos_v2', JSON.stringify(gastos));
       const indice = miCuadres.findIndex(item => item.id === cuadre.id);
       if (indice >= 0) miCuadres[indice] = { ...miCuadres[indice], ...cuadre };
       else miCuadres.unshift(cuadre);
@@ -5346,8 +5462,11 @@ function guardarPermisosEmpleado() {
       const desglose = cuadre.desgloseEfectivo || {};
       const billetes = [[1, '$1'], [5, '$5'], [10, '$10'], [25, '$25'], [50, '$50'], [100, '$100'], [200, '$200'], [500, '$500'], [1000, '$1,000'], [2000, '$2,000']].filter(([valor]) => (desglose[`den${valor}`] || 0) > 0).map(([valor, etiqueta]) => `${etiqueta}: ${desglose[`den${valor}`]}`).join(' | ') || 'Sin billetes registrados';
       const transferencias = cuadre.transferencias.map(transferencia => `<li>${transferencia.bancoReportado || 'Cuenta no indicada'}: $${transferencia.monto.toFixed(2)}${transferencia.referencia ? ` (${transferencia.referencia})` : ''}</li>`).join('') || '<li>Sin transferencias</li>';
-      const retiroHtml = cuadre.retirosCajaTotal > 0 ? `<div class="bg-rose-50 border border-rose-200 rounded-xl p-3 text-xs"><p class="font-bold mb-1 text-rose-700">Retiro de caja del administrador (ya descontado)</p><p class="font-black text-rose-700">-$${cuadre.retirosCajaTotal.toFixed(2)}</p></div>` : '';
-      contenido.innerHTML = `<div class="grid grid-cols-2 gap-3 text-sm"><div><span class="text-xs text-slate-500">Empleado</span><p class="font-bold">${cuadre.empleadoNombre}</p></div><div><span class="text-xs text-slate-500">Fecha</span><p class="font-bold">${cuadre.fecha}</p></div><div><span class="text-xs text-slate-500">Transferencias declaradas</span><p class="font-bold">$${cuadre.totalTransferencias.toFixed(2)}</p></div><div><span class="text-xs text-slate-500">Efectivo contado</span><p class="font-bold">$${cuadre.efectivoContado.toFixed(2)}</p></div></div><div class="bg-slate-50 rounded-xl p-3 text-xs"><p class="font-bold mb-1">Desglose de efectivo</p><p>${billetes}${desglose.otros ? ` | Monedas / otros: $${desglose.otros.toFixed(2)}` : ''}</p></div><div class="bg-slate-50 rounded-xl p-3 text-xs"><p class="font-bold mb-1">Transferencias reportadas</p><ul class="list-disc pl-4">${transferencias}</ul></div>${retiroHtml}<div class="grid grid-cols-2 gap-3 bg-rose-50 border border-rose-200 rounded-xl p-4"><div><span class="text-xs text-slate-500">Efectivo esperado</span><p class="font-black">$${cuadre.efectivoEsperado.toFixed(2)}</p></div><div><span class="text-xs text-slate-500">Diferencia</span><p class="font-black ${color}">${cuadre.diferencia < 0 ? '-' : ''}$${Math.abs(cuadre.diferencia).toFixed(2)}</p></div></div>${cuadre.observacion ? `<div class="text-sm"><span class="text-xs text-slate-500">Observaciones</span><p>${cuadre.observacion}</p></div>` : ''}`;
+      const retirosCajaTotal = Number(cuadre.retirosCajaTotal || 0);
+      const gastosCajaTotal = Number(cuadre.gastosCajaTotal || 0);
+      const retiroHtml = retirosCajaTotal > 0 ? `<div class="bg-rose-50 border border-rose-200 rounded-xl p-3 text-xs"><p class="font-bold mb-1 text-rose-700">Retiro de caja del administrador (ya descontado)</p><p class="font-black text-rose-700">-$${retirosCajaTotal.toFixed(2)}</p></div>` : '';
+      const gastoHtml = gastosCajaTotal > 0 ? `<div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs"><p class="font-bold mb-1 text-amber-700">Gastos y salidas de la cajera (ya descontado)</p><p class="font-black text-amber-700">-$${gastosCajaTotal.toFixed(2)}</p></div>` : '';
+      contenido.innerHTML = `<div class="grid grid-cols-2 gap-3 text-sm"><div><span class="text-xs text-slate-500">Empleado</span><p class="font-bold">${cuadre.empleadoNombre}</p></div><div><span class="text-xs text-slate-500">Fecha</span><p class="font-bold">${cuadre.fecha}</p></div><div><span class="text-xs text-slate-500">Transferencias declaradas</span><p class="font-bold">$${cuadre.totalTransferencias.toFixed(2)}</p></div><div><span class="text-xs text-slate-500">Efectivo contado</span><p class="font-bold">$${cuadre.efectivoContado.toFixed(2)}</p></div></div><div class="bg-slate-50 rounded-xl p-3 text-xs"><p class="font-bold mb-1">Desglose de efectivo</p><p>${billetes}${desglose.otros ? ` | Monedas / otros: $${desglose.otros.toFixed(2)}` : ''}</p></div><div class="bg-slate-50 rounded-xl p-3 text-xs"><p class="font-bold mb-1">Transferencias reportadas</p><ul class="list-disc pl-4">${transferencias}</ul></div>${retiroHtml}${gastoHtml}<div class="grid grid-cols-2 gap-3 bg-rose-50 border border-rose-200 rounded-xl p-4"><div><span class="text-xs text-slate-500">Efectivo esperado</span><p class="font-black">$${cuadre.efectivoEsperado.toFixed(2)}</p></div><div><span class="text-xs text-slate-500">Diferencia</span><p class="font-black ${color}">${cuadre.diferencia < 0 ? '-' : ''}$${Math.abs(cuadre.diferencia).toFixed(2)}</p></div></div>${cuadre.observacion ? `<div class="text-sm"><span class="text-xs text-slate-500">Observaciones</span><p>${cuadre.observacion}</p></div>` : ''}`;
       modal.classList.remove('hidden');
       modal.classList.add('flex');
     }
@@ -5379,7 +5498,8 @@ function guardarPermisosEmpleado() {
         const botonesRevisarConfirmar = puedeConfirmarMiCuadre() ? `<button type="button" onclick="revisarMiCuadre(${cuadre.id})" class="text-amber-600 p-1" title="Marcar como revisado y comentar"><i class="fa-solid fa-eye"></i></button>` : '';
         const acciones = cuadre.estado === 'Confirmado' ? '<span class="text-xs text-emerald-600 font-semibold">Aplicado</span>' : `${botonEditar}${botonesRevisarConfirmar}${!botonEditar && !botonesRevisarConfirmar ? '<span class="text-xs text-slate-500">En revisión</span>' : ''}`;
         const comentario = cuadre.comentarioRevision ? `<br><span class="text-[10px] text-indigo-600 italic">"${cuadre.comentarioRevision}"</span>` : '';
-        return `<tr><td class="py-3 px-4 text-xs">${cuadre.fecha}<br><span class="text-slate-500">${cuadre.empleadoNombre}</span>${cuadre.sucursalNombre ? `<br><span class="text-[10px] text-indigo-500">${cuadre.sucursalNombre}</span>` : ''}${cuadre.retirosCajaTotal > 0 ? `<br><span class="text-[10px] text-rose-500">Retiro: -$${cuadre.retirosCajaTotal.toFixed(2)}</span>` : ''}</td><td class="py-3 px-4 font-bold">$${cuadre.ventas.toFixed(2)}</td><td class="py-3 px-4 font-bold">$${cuadre.efectivoContado.toFixed(2)}</td><td class="py-3 px-4 font-bold">$${cuadre.totalTransferencias.toFixed(2)}</td><td class="py-3 px-4 font-black ${color}">${cuadre.diferencia < 0 ? '-' : ''}$${Math.abs(cuadre.diferencia).toFixed(2)}</td><td class="py-3 px-4"><span class="px-2 py-1 rounded-full text-[10px] font-bold ${estadoColor}">${cuadre.estado}</span>${comentario}</td><td class="py-3 px-4">${controles}</td><td class="py-3 px-4 text-center whitespace-nowrap">${acciones}</td></tr>`;
+        const ajustesCuadreHtml = `${Number(cuadre.retirosCajaTotal || 0) > 0 ? `<br><span class="text-[10px] text-rose-500">Retiro: -$${Number(cuadre.retirosCajaTotal || 0).toFixed(2)}</span>` : ''}${Number(cuadre.gastosCajaTotal || 0) > 0 ? `<br><span class="text-[10px] text-amber-600">Gastos: -$${Number(cuadre.gastosCajaTotal || 0).toFixed(2)}</span>` : ''}`;
+        return `<tr><td class="py-3 px-4 text-xs">${cuadre.fecha}<br><span class="text-slate-500">${cuadre.empleadoNombre}</span>${cuadre.sucursalNombre ? `<br><span class="text-[10px] text-indigo-500">${cuadre.sucursalNombre}</span>` : ''}${ajustesCuadreHtml}</td><td class="py-3 px-4 font-bold">$${cuadre.ventas.toFixed(2)}</td><td class="py-3 px-4 font-bold">$${cuadre.efectivoContado.toFixed(2)}</td><td class="py-3 px-4 font-bold">$${cuadre.totalTransferencias.toFixed(2)}</td><td class="py-3 px-4 font-black ${color}">${cuadre.diferencia < 0 ? '-' : ''}$${Math.abs(cuadre.diferencia).toFixed(2)}</td><td class="py-3 px-4"><span class="px-2 py-1 rounded-full text-[10px] font-bold ${estadoColor}">${cuadre.estado}</span>${comentario}</td><td class="py-3 px-4">${controles}</td><td class="py-3 px-4 text-center whitespace-nowrap">${acciones}</td></tr>`;
       }).join('');
       if (!cuadresFiltrados.length) tbody.innerHTML = `<tr><td colspan="8" class="py-4 text-center text-slate-400 italic">${cuadresVisibles.length === 0 ? 'No hay cuadres enviados.' : 'No se encontraron cuadres con ese criterio de búsqueda.'}</td></tr>`;
     }
@@ -7256,8 +7376,26 @@ function imprimirTicketTransferenciaDirecto(t) {
     function elegirAccionAlertaDesglose(accion) {
       accionPendienteAlertaDesglose = accion;
       document.getElementById('alerta-desglose-paso-acciones').classList.add('hidden');
+      if (accion === 'editar') {
+        const diferenciaActual = calcularTotalDesgloseNumero() - montoTotalRequeridoCuadre;
+        bitacoraDiferenciasDesglose.unshift({
+          id: Date.now(),
+          fechaHora: new Date().toLocaleString(),
+          accion: 'editar',
+          diferencia: diferenciaActual,
+          motivo: '',
+          autorizadoPor: usuarioLogueado?.nombre || 'Admin'
+        });
+        localStorage.setItem('mis_bitacora_diferencias_desglose', JSON.stringify(bitacoraDiferenciasDesglose));
+        const modalAlerta = document.getElementById('modal-alerta-diferencia-desglose');
+        modalAlerta.classList.add('hidden');
+        modalAlerta.classList.remove('flex');
+        accionPendienteAlertaDesglose = null;
+        setTimeout(() => document.getElementById('den-1000')?.focus(), 50);
+        return;
+      }
       const tituloMotivo = document.getElementById('alerta-desglose-motivo-titulo');
-      if (tituloMotivo) tituloMotivo.textContent = accion === 'editar' ? 'Escriba el motivo por el que va a editar el desglose *' : 'Escriba el motivo del faltante o sobrante *';
+      if (tituloMotivo) tituloMotivo.textContent = 'Escriba el motivo del faltante o sobrante *';
       const campoMotivo = document.getElementById('alerta-desglose-motivo');
       if (campoMotivo) campoMotivo.value = '';
       document.getElementById('alerta-desglose-paso-motivo').classList.remove('hidden');

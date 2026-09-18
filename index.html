@@ -9,12 +9,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
-  <script>
-    window.SUPABASE_CONFIG = window.SUPABASE_CONFIG || {
-      url: 'https://bpfjqvdjoiztwskgdnis.supabase.co',
-      publishableKey: 'sb_publishable_fO9iaPkxQrdEkjz0tmyOmg_gEEIbxpn'
-    };
-  </script>
 
   <style>
     @media print {
@@ -1809,6 +1803,34 @@
     let sincronizacionLista = false;
     let temporizadorSincronizacion = null;
     const cambiosPendientesNube = new Map();
+    // Al editar/probar en la propia PC (localhost o abriendo el archivo) no se sincroniza por defecto
+    const esEntornoLocalDeEdicion = ['localhost', '127.0.0.1', ''].includes(location.hostname);
+    // Clave local (no incluida en CLAVES_SINCRONIZADAS) para no sincronizar el propio interruptor
+    const preferenciaModoPruebaGuardada = localStorage.getItem('modo_prueba_activo');
+    let modoPruebaActivo = preferenciaModoPruebaGuardada === null
+      ? esEntornoLocalDeEdicion
+      : preferenciaModoPruebaGuardada === 'true';
+
+    function actualizarBotonModoPrueba() {
+      let boton = document.getElementById('boton-modo-prueba');
+      if (!boton) {
+        boton = document.createElement('button');
+        boton.id = 'boton-modo-prueba';
+        boton.type = 'button';
+        boton.className = 'fixed bottom-4 left-4 z-[100] px-3 py-2 rounded-xl shadow-lg text-xs font-bold text-white';
+        boton.onclick = () => {
+          modoPruebaActivo = !modoPruebaActivo;
+          setItemLocalOriginal.call(localStorage, 'modo_prueba_activo', String(modoPruebaActivo));
+          actualizarBotonModoPrueba();
+        };
+        document.body.appendChild(boton);
+      }
+      boton.classList.toggle('bg-amber-600', modoPruebaActivo);
+      boton.classList.toggle('bg-slate-500', !modoPruebaActivo);
+      boton.innerHTML = modoPruebaActivo
+        ? '<i class="fa-solid fa-flask mr-1"></i> Modo prueba: ON (no sincroniza)'
+        : '<i class="fa-solid fa-flask mr-1"></i> Modo prueba: OFF';
+    }
 
     function mostrarEstadoSincronizacion(texto, esError = false, permitirReintento = false) {
       let aviso = document.getElementById('estado-sincronizacion-nube');
@@ -1854,7 +1876,7 @@
     }
 
     function programarSincronizacion(clave, valor) {
-      if (!sincronizacionLista || !CLAVES_SINCRONIZADAS.includes(clave)) return;
+      if (!sincronizacionLista || modoPruebaActivo || !CLAVES_SINCRONIZADAS.includes(clave)) return;
       cambiosPendientesNube.set(clave, valor);
       clearTimeout(temporizadorSincronizacion);
       temporizadorSincronizacion = setTimeout(enviarCambiosPendientes, 400);
@@ -1865,26 +1887,14 @@
       if (this === localStorage) programarSincronizacion(clave, String(valor));
     };
 
-    function avisarCambiosRemotos() {
-      let aviso = document.getElementById('aviso-cambios-remotos');
-      if (aviso) return;
-      aviso = document.createElement('button');
-      aviso.id = 'aviso-cambios-remotos';
-      aviso.type = 'button';
-      aviso.className = 'fixed bottom-4 right-4 z-[100] bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-3 rounded-xl shadow-xl text-xs font-bold';
-      aviso.innerHTML = '<i class="fa-solid fa-rotate mr-1"></i> Hay cambios de otra computadora. Actualizar';
-      aviso.onclick = () => location.reload();
-      document.body.appendChild(aviso);
-    }
-
     function escucharCambiosRemotos() {
       clienteSupabase.channel('sincronizacion-estado-aplicacion')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'estado_aplicacion' }, carga => {
           const fila = carga.new;
           if (!fila || !CLAVES_SINCRONIZADAS.includes(fila.clave)) return;
           if (localStorage.getItem(fila.clave) === fila.valor) return;
+          // Se guarda de una vez; se refleja en pantalla la próxima vez que se cargue o cambie de sección
           setItemLocalOriginal.call(localStorage, fila.clave, fila.valor);
-          avisarCambiosRemotos();
         })
         .subscribe();
     }
@@ -1938,6 +1948,8 @@
       return huboCambios;
     }
 
+    actualizarBotonModoPrueba();
+
     const secciones = [
       'dashboard', 'gastos', 'compra', 'mi-cuadre', 'retiro-caja', 'cuadre-cajera', 'cuadre-delivery', 'nomina', 'credito-empleado', 'vacaciones', 
       'reportes', 'inmuebles-equipos', 'confirmacion-transferencias', 'registro-empleado', 
@@ -1946,6 +1958,7 @@
 
     localStorage.removeItem('sesion_activa');
     sessionStorage.removeItem('sesion_activa');
+    // Se restaura al final del archivo, tras cargar empleados, para validar que el usuario siga existiendo
     let usuarioLogueado = null;
     let adminPin = localStorage.getItem('mis_admin_pin') || '1234';
     let retiroCajaPin = localStorage.getItem('mis_retiro_caja_pin') || '';
@@ -2646,6 +2659,7 @@
       if (userVal === 'admin') {
         if (pinVal === adminPin) {
           usuarioLogueado = { id: 'admin', nombre: 'Administrador Principal', cargo: 'Acceso Total' };
+          sessionStorage.setItem('sesion_usuario_actual', JSON.stringify(usuarioLogueado));
           document.getElementById('login-pin').value = '';
           verificarEstadoSesion();
           irASeccionPermitidaPorDefecto();
@@ -2655,6 +2669,7 @@
         const emp = empleados.find(e => e.id === empId);
         if (emp && emp.pin === pinVal) {
           usuarioLogueado = { id: emp.id, nombre: emp.nombre, cargo: emp.cargo };
+          sessionStorage.setItem('sesion_usuario_actual', JSON.stringify(usuarioLogueado));
           document.getElementById('login-pin').value = '';
           verificarEstadoSesion();
           irASeccionPermitidaPorDefecto();
@@ -2684,6 +2699,7 @@
         usuarioLogueado = null;
         localStorage.removeItem('sesion_activa');
         sessionStorage.removeItem('sesion_activa');
+        sessionStorage.removeItem('sesion_usuario_actual');
         ocultarTodasLasSeccionesPorSeguridad();
         verificarEstadoSesion();
       }
@@ -7873,6 +7889,15 @@ function imprimirTicketTransferenciaDirecto(t) {
       }
 
       ocultarTodasLasSeccionesPorSeguridad();
+      // Restaura la sesión al refrescar la página (se pierde solo al cerrar la pestaña o al pulsar "Salir")
+      try {
+        const sesionGuardada = JSON.parse(sessionStorage.getItem('sesion_usuario_actual'));
+        if (sesionGuardada && (sesionGuardada.id === 'admin' || empleados.some(e => e.id === sesionGuardada.id))) {
+          usuarioLogueado = sesionGuardada;
+        } else {
+          sessionStorage.removeItem('sesion_usuario_actual');
+        }
+      } catch (e) { sessionStorage.removeItem('sesion_usuario_actual'); }
       verificarEstadoSesion();
       if (usuarioLogueado) irASeccionPermitidaPorDefecto();
       renderizarGastos();

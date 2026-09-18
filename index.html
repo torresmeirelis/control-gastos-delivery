@@ -9,6 +9,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
+  <script>
+    window.SUPABASE_CONFIG = window.SUPABASE_CONFIG || {
+      url: 'https://bpfjqvdjoiztwskgdnis.supabase.co',
+      publishableKey: 'sb_publishable_fO9iaPkxQrdEkjz0tmyOmg_gEEIbxpn'
+    };
+  </script>
 
   <style>
     @media print {
@@ -1855,6 +1861,18 @@
       aviso._ocultarTimer = setTimeout(() => aviso.remove(), esError ? 30000 : 2500);
     }
 
+    function mostrarAvisoCambiosRemotos() {
+      let aviso = document.getElementById('aviso-cambios-remotos');
+      if (aviso) return;
+      aviso = document.createElement('button');
+      aviso.id = 'aviso-cambios-remotos';
+      aviso.type = 'button';
+      aviso.className = 'fixed bottom-16 right-4 z-[101] max-w-sm px-4 py-3 rounded-xl shadow-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700';
+      aviso.innerHTML = '<i class="fa-solid fa-rotate mr-1"></i> Hay cambios de otra computadora. Actualizar';
+      aviso.onclick = () => location.reload();
+      document.body.appendChild(aviso);
+    }
+
     async function enviarCambiosPendientes() {
       if (!clienteSupabase) return false;
       if (cambiosPendientesNube.size === 0) return true;
@@ -1893,8 +1911,9 @@
           const fila = carga.new;
           if (!fila || !CLAVES_SINCRONIZADAS.includes(fila.clave)) return;
           if (localStorage.getItem(fila.clave) === fila.valor) return;
-          // Se guarda de una vez; se refleja en pantalla la próxima vez que se cargue o cambie de sección
+          // Se guarda de una vez y se ofrece recargar para reconstruir el estado en memoria.
           setItemLocalOriginal.call(localStorage, fila.clave, fila.valor);
+          mostrarAvisoCambiosRemotos();
         })
         .subscribe();
     }
